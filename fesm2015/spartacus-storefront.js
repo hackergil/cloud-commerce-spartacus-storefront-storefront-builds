@@ -1,17 +1,1822 @@
-import { ServiceWorkerModule, ɵangular_packages_service_worker_service_worker_b } from '@angular/service-worker';
 import { __awaiter } from 'tslib';
+import { ServiceWorkerModule, ɵangular_packages_service_worker_service_worker_b } from '@angular/service-worker';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbTabsetModule, NgbAccordionModule, NgbTabsetConfig, NgbAccordionConfig, NgbRatingModule, NgbRatingConfig, NgbDropdownModule, NgbTypeaheadModule, NgbCollapseModule, NgbModalModule, NgbPaginationModule, NgbPaginationConfig, NgbModule, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { combineLatest, BehaviorSubject, concat, from, isObservable, of, fromEvent, ReplaySubject, Subscription, merge, Subject } from 'rxjs';
+import { concat, from, isObservable, of, fromEvent, BehaviorSubject, combineLatest, ReplaySubject, Subscription, merge, Subject } from 'rxjs';
 import { NG_VALUE_ACCESSOR, FormControl, FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HttpUrlEncodingCodec, HttpResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { debounceTime, tap, filter, map, takeWhile, endWith, first, skipWhile, startWith, distinctUntilChanged, switchMap, withLatestFrom, multicast, refCount, take, delay } from 'rxjs/operators';
-import { CommonModule, isPlatformServer, DOCUMENT } from '@angular/common';
-import { RouterModule, Router, ActivatedRoute } from '@angular/router';
-import { Component, Input, EventEmitter, Output, ElementRef, ChangeDetectorRef, Renderer2, NgModule, ChangeDetectionStrategy, forwardRef, ViewChild, Directive, HostListener, ViewEncapsulation, Injectable, APP_INITIALIZER, Inject, PLATFORM_ID, Optional, Injector, HostBinding, TemplateRef, ViewContainerRef, defineInjectable, inject, INJECTOR } from '@angular/core';
-import { I18nModule, CartService, UrlTranslationModule, ConfigModule, CartModule, CheckoutService, GlobalMessageService, GlobalMessageType, UserService, RoutingService, CartDataService, CheckoutModule, ServerConfig, WindowRef, Config, CmsConfig, provideConfigFactory, serverConfigFromMetaTagFactory, TranslationService, TranslationNamespaceService, RoutingModule, AuthGuard, ProductService, UserModule, CmsService, AuthService, StoreDataService, StoreFinderService, GoogleMapRendererService, provideConfig, StateModule, AuthModule, CxApiModule, SmartEditModule, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, ContextServiceMap, defaultCmsModuleConfig, CmsModule, ProductReviewService, SiteContextModule, StripHtmlModule, PageMetaService, CmsPageTitleModule, ProductModule, ProductSearchService, StoreFinderCoreModule, PageType, GlobalMessageModule, OccUserService, OccMiscsService, OccOrderService, OccConfig, DynamicAttributeService, CxApiService, ComponentMapperService, PageRobotsMeta, NotAuthGuard } from '@spartacus/core';
+import { endWith, first, skipWhile, debounceTime, startWith, map, distinctUntilChanged, switchMap, filter, tap, withLatestFrom, takeWhile, multicast, refCount, take, delay } from 'rxjs/operators';
+import { isPlatformServer, CommonModule, DOCUMENT } from '@angular/common';
+import { Router, RouterModule, ActivatedRoute, NavigationStart } from '@angular/router';
+import { Injectable, NgModule, ElementRef, Input, Directive, Component, ChangeDetectionStrategy, Output, EventEmitter, ViewEncapsulation, Optional, Injector, ViewChild, HostListener, Renderer2, Inject, APP_INITIALIZER, PLATFORM_ID, TemplateRef, ViewContainerRef, ChangeDetectorRef, forwardRef, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { AuthService, CmsService, PageType, provideConfigFactory, serverConfigFromMetaTagFactory, ServerConfig, GlobalMessageType, GlobalMessageService, WindowRef, UrlTranslationModule, I18nModule, ConfigModule, CheckoutService, RoutingService, UserService, TranslationService, TranslationNamespaceService, CartService, RoutingModule, CartModule, AuthGuard, ProductService, UserModule, CmsConfig, StoreDataService, StoreFinderService, GoogleMapRendererService, CartDataService, provideConfig, StateModule, AuthModule, CxApiModule, SmartEditModule, Config, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, ContextServiceMap, ProductReviewService, CheckoutModule, defaultCmsModuleConfig, CmsModule, SiteContextModule, StripHtmlModule, PageMetaService, CmsPageTitleModule, ProductModule, ProductSearchService, StoreFinderCoreModule, GlobalMessageModule, OccUserService, OccMiscsService, OccOrderService, OccConfig, DynamicAttributeService, PageRobotsMeta, CxApiService, ComponentMapperService, NotAuthGuard } from '@spartacus/core';
 import { Title, Meta } from '@angular/platform-browser';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class LogoutGuard {
+    /**
+     * @param {?} auth
+     * @param {?} cms
+     */
+    constructor(auth, cms) {
+        this.auth = auth;
+        this.cms = cms;
+    }
+    /**
+     * @return {?}
+     */
+    canActivate() {
+        this.logout();
+        return this.cms.hasPage({
+            id: '/logout',
+            type: PageType.CONTENT_PAGE,
+        });
+    }
+    /**
+     * @protected
+     * @return {?}
+     */
+    logout() {
+        this.auth.logout();
+    }
+}
+LogoutGuard.GUARD_NAME = 'LogoutGuard';
+LogoutGuard.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+LogoutGuard.ctorParameters = () => [
+    { type: AuthService },
+    { type: CmsService }
+];
+/** @nocollapse */ LogoutGuard.ngInjectableDef = defineInjectable({ factory: function LogoutGuard_Factory() { return new LogoutGuard(inject(AuthService), inject(CmsService)); }, token: LogoutGuard, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CmsMappingService {
+    /**
+     * @param {?} config
+     * @param {?} platformId
+     */
+    constructor(config, platformId) {
+        this.config = config;
+        this.platformId = platformId;
+    }
+    /**
+     * @param {?} flexType
+     * @return {?}
+     */
+    isComponentEnabled(flexType) {
+        /** @type {?} */
+        const isSSR = isPlatformServer(this.platformId);
+        /** @type {?} */
+        const isComponentDisabledInSSR = (this.config.cmsComponents[flexType] || {})
+            .disableSSR;
+        return !(isSSR && isComponentDisabledInSSR);
+    }
+    /**
+     * @param {?} componentTypes
+     * @return {?}
+     */
+    getRoutesForComponents(componentTypes) {
+        /** @type {?} */
+        const routes = [];
+        for (const componentType of componentTypes) {
+            if (this.isComponentEnabled(componentType)) {
+                routes.push(...this.getRoutesForComponent(componentType));
+            }
+        }
+        return routes;
+    }
+    /**
+     * @param {?} componentTypes
+     * @return {?}
+     */
+    getGuardsForComponents(componentTypes) {
+        /** @type {?} */
+        const guards = new Set();
+        for (const componentType of componentTypes) {
+            this.getGuardsForComponent(componentType).forEach(guard => guards.add(guard));
+        }
+        return Array.from(guards);
+    }
+    /**
+     * @param {?} componentTypes
+     * @return {?}
+     */
+    getI18nKeysForComponents(componentTypes) {
+        /** @type {?} */
+        const namespaces = new Set();
+        for (const componentType of componentTypes) {
+            if (this.isComponentEnabled(componentType)) {
+                this.getI18nKeysForComponent(componentType).forEach(namespace => namespaces.add(namespace));
+            }
+        }
+        return Array.from(namespaces);
+    }
+    /**
+     * @private
+     * @param {?} componentType
+     * @return {?}
+     */
+    getRoutesForComponent(componentType) {
+        /** @type {?} */
+        const mappingConfig = this.config.cmsComponents[componentType];
+        return (mappingConfig && mappingConfig.childRoutes) || [];
+    }
+    /**
+     * @private
+     * @param {?} componentType
+     * @return {?}
+     */
+    getGuardsForComponent(componentType) {
+        /** @type {?} */
+        const mappingConfig = this.config.cmsComponents[componentType];
+        return (mappingConfig && mappingConfig.guards) || [];
+    }
+    /**
+     * @private
+     * @param {?} componentType
+     * @return {?}
+     */
+    getI18nKeysForComponent(componentType) {
+        /** @type {?} */
+        const mappingConfig = this.config.cmsComponents[componentType];
+        return (mappingConfig && mappingConfig.i18nKeys) || [];
+    }
+}
+CmsMappingService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CmsMappingService.ctorParameters = () => [
+    { type: CmsConfig },
+    { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
+];
+/** @nocollapse */ CmsMappingService.ngInjectableDef = defineInjectable({ factory: function CmsMappingService_Factory() { return new CmsMappingService(inject(CmsConfig), inject(PLATFORM_ID)); }, token: CmsMappingService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CmsGuardsService {
+    /**
+     * @param {?} cmsMapping
+     * @param {?} injector
+     */
+    constructor(cmsMapping, injector) {
+        this.cmsMapping = cmsMapping;
+        this.injector = injector;
+    }
+    /**
+     * @param {?} componentTypes
+     * @param {?} route
+     * @param {?} state
+     * @return {?}
+     */
+    cmsPageCanActivate(componentTypes, route, state) {
+        /** @type {?} */
+        const guards = this.cmsMapping.getGuardsForComponents(componentTypes);
+        if (guards.length) {
+            /** @type {?} */
+            const canActivateObservables = guards.map(guardClass => {
+                /** @type {?} */
+                const guard = this.injector.get(guardClass, null);
+                if (isCanActivate(guard)) {
+                    return wrapIntoObservable(guard.canActivate(route, state)).pipe(first());
+                }
+                else {
+                    throw new Error('Invalid CanActivate guard in cmsMapping');
+                }
+            });
+            return concat(...canActivateObservables).pipe(skipWhile((canActivate) => canActivate === true), endWith(true), first());
+        }
+        else {
+            return of(true);
+        }
+    }
+}
+CmsGuardsService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CmsGuardsService.ctorParameters = () => [
+    { type: CmsMappingService },
+    { type: Injector }
+];
+/** @nocollapse */ CmsGuardsService.ngInjectableDef = defineInjectable({ factory: function CmsGuardsService_Factory() { return new CmsGuardsService(inject(CmsMappingService), inject(INJECTOR)); }, token: CmsGuardsService, providedIn: "root" });
+/**
+ * @template T
+ * @param {?} value
+ * @return {?}
+ */
+function wrapIntoObservable(value) {
+    if (isObservable(value)) {
+        return value;
+    }
+    if (isPromise(value)) {
+        return from(Promise.resolve(value));
+    }
+    return of(value);
+}
+/**
+ * @param {?} obj
+ * @return {?}
+ */
+function isPromise(obj) {
+    return !!obj && typeof obj.then === 'function';
+}
+/**
+ * @param {?} guard
+ * @return {?}
+ */
+function isCanActivate(guard) {
+    return guard && isFunction(guard.canActivate);
+}
+/**
+ * @template T
+ * @param {?} v
+ * @return {?}
+ */
+function isFunction(v) {
+    return typeof v === 'function';
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CmsI18nService {
+    /**
+     * @param {?} cmsMapping
+     * @param {?} translation
+     * @param {?} translationNamespace
+     */
+    constructor(cmsMapping, translation, translationNamespace) {
+        this.cmsMapping = cmsMapping;
+        this.translation = translation;
+        this.translationNamespace = translationNamespace;
+    }
+    /**
+     * @param {?} componentTypes
+     * @return {?}
+     */
+    loadNamespacesForComponents(componentTypes) {
+        /** @type {?} */
+        const i18nKeys = this.cmsMapping.getI18nKeysForComponents(componentTypes);
+        /** @type {?} */
+        const i18nNamespaces = new Set();
+        for (const key of i18nKeys) {
+            i18nNamespaces.add(this.translationNamespace.getNamespace(key));
+        }
+        this.translation.loadNamespaces(Array.from(i18nNamespaces));
+    }
+}
+CmsI18nService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CmsI18nService.ctorParameters = () => [
+    { type: CmsMappingService },
+    { type: TranslationService },
+    { type: TranslationNamespaceService }
+];
+/** @nocollapse */ CmsI18nService.ngInjectableDef = defineInjectable({ factory: function CmsI18nService_Factory() { return new CmsI18nService(inject(CmsMappingService), inject(TranslationService), inject(TranslationNamespaceService)); }, token: CmsI18nService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {string} */
+const BREAKPOINT = {
+    xs: 'xs',
+    sm: 'sm',
+    md: 'md',
+    lg: 'lg',
+    xl: 'xl',
+};
+/**
+ * @abstract
+ */
+class LayoutConfig {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class BreakpointService {
+    /**
+     * @param {?} winRef
+     * @param {?} config
+     */
+    constructor(winRef, config) {
+        this.winRef = winRef;
+        this.config = config;
+    }
+    /**
+     * @return {?}
+     */
+    get breakpoint$() {
+        if (!this.window) {
+            return of(BREAKPOINT.xs);
+        }
+        return fromEvent(this.window, 'resize').pipe(debounceTime(300), startWith({ target: this.window }), map(event => this.getBreakpoint(((/** @type {?} */ (event.target))).innerWidth)), distinctUntilChanged());
+    }
+    /**
+     * @return {?}
+     */
+    get breakpoints() {
+        return [
+            BREAKPOINT.xs,
+            BREAKPOINT.sm,
+            BREAKPOINT.md,
+            BREAKPOINT.lg,
+            BREAKPOINT.xl,
+        ];
+    }
+    /**
+     * @protected
+     * @param {?} windowWidth
+     * @return {?}
+     */
+    getBreakpoint(windowWidth) {
+        /** @type {?} */
+        const breakpoint = this.getClosest(windowWidth);
+        return BREAKPOINT[breakpoint || BREAKPOINT.lg];
+    }
+    /**
+     * @protected
+     * @param {?=} windowWidth
+     * @return {?}
+     */
+    getClosest(windowWidth) {
+        if (!windowWidth) {
+            windowWidth = this.window.innerWidth;
+        }
+        return windowWidth < this.getSize(BREAKPOINT.xs)
+            ? BREAKPOINT.xs
+            : this.breakpoints.reverse().find(br => windowWidth >= this.getSize(br));
+    }
+    /**
+     * @protected
+     * @param {?} breakpoint
+     * @return {?}
+     */
+    getSize(breakpoint) {
+        return this.config.breakpoints[breakpoint];
+    }
+    /**
+     * @return {?}
+     */
+    get window() {
+        return this.winRef.nativeWindow;
+    }
+}
+BreakpointService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+BreakpointService.ctorParameters = () => [
+    { type: WindowRef },
+    { type: LayoutConfig }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PageLayoutService {
+    /**
+     * @param {?} cms
+     * @param {?} config
+     * @param {?} breakpointService
+     */
+    constructor(cms, config, breakpointService) {
+        this.cms = cms;
+        this.config = config;
+        this.breakpointService = breakpointService;
+        // we print warn messages on missing layout configs
+        // only once to not polute the console log
+        this.warnLogMessages = {};
+    }
+    // TODO:
+    // distinctUntilChanged is not enough here, probably because
+    // we use the startWith operator in the breakpoint service which
+    // doesn't seem to work well with distinctUntilChanged, see
+    // https://github.com/ReactiveX/rxjs/issues/4030
+    /**
+     * @param {?=} section
+     * @return {?}
+     */
+    getSlots(section) {
+        return this.breakpointService.breakpoint$.pipe(switchMap(breakpoint => this.page$.pipe(map(page => this.getSlotConfig(page.template, 'slots', section, breakpoint)), filter(Boolean), map(config => config.slots))), distinctUntilChanged());
+    }
+    /**
+     * @return {?}
+     */
+    get page$() {
+        return this.cms.getCurrentPage().pipe(filter(Boolean));
+    }
+    /**
+     * @return {?}
+     */
+    get templateName$() {
+        return this.page$.pipe(filter(page => !!page.template), map((page) => page.template));
+    }
+    /**
+     * load slots from the layout configuration. The breakpoint is used
+     * to load a specific configuration for the given breakpoint. If there's
+     * no configuration available for the given breakpoint the default slot
+     * configuration is returned.
+     * @protected
+     * @param {?} templateUid
+     * @param {?} configAttribute
+     * @param {?=} section
+     * @param {?=} breakpoint
+     * @return {?}
+     */
+    getSlotConfig(templateUid, configAttribute, section, breakpoint) {
+        /** @type {?} */
+        const pageTemplateConfig = this.config.layoutSlots[templateUid];
+        if (section) {
+            return this.getSlotConfigForSection(templateUid, configAttribute, section, breakpoint);
+        }
+        if (!pageTemplateConfig) {
+            return this.noConfigFound(templateUid);
+        }
+        else {
+            return this.getResponsiveSlotConfig((/** @type {?} */ (pageTemplateConfig)), configAttribute, breakpoint);
+        }
+    }
+    /**
+     * @protected
+     * @param {?} templateUid
+     * @param {?} configAttribute
+     * @param {?=} section
+     * @param {?=} breakpoint
+     * @return {?}
+     */
+    getSlotConfigForSection(templateUid, configAttribute, section, breakpoint) {
+        /** @type {?} */
+        const pageTemplateConfig = this.config.layoutSlots[templateUid];
+        if (!pageTemplateConfig) {
+            return null;
+        }
+        // if there's no section config on the page layout
+        // we fall back to the global section config
+        /** @type {?} */
+        const sectionConfig = pageTemplateConfig[section]
+            ? pageTemplateConfig[section]
+            : this.config.layoutSlots[section];
+        if (!sectionConfig) {
+            return null;
+        }
+        /** @type {?} */
+        const responsiveConfig = this.getResponsiveSlotConfig((/** @type {?} */ (sectionConfig)), configAttribute, breakpoint);
+        if (responsiveConfig.hasOwnProperty(configAttribute)) {
+            return responsiveConfig;
+        }
+        else if (pageTemplateConfig[section].hasOwnProperty(configAttribute)) {
+            return pageTemplateConfig[section];
+        }
+        else if (this.config.layoutSlots[section]) {
+            return (/** @type {?} */ (this.config.layoutSlots[section]));
+        }
+    }
+    /**
+     * Returns a list of slots for a breakpoint specific configuratoin
+     * If there's no specific configuration for the breakpoint,
+     * the closest available configuration will be returned.
+     * @protected
+     * @param {?} layoutSlotConfig
+     * @param {?} configAttribute
+     * @param {?=} breakpoint
+     * @return {?}
+     */
+    getResponsiveSlotConfig(layoutSlotConfig, configAttribute, breakpoint) {
+        /** @type {?} */
+        let slotConfig = (/** @type {?} */ (layoutSlotConfig));
+        // fallback to default slot config
+        if (!breakpoint) {
+            return slotConfig;
+        }
+        // we have a config for the specific breakpoint
+        if (layoutSlotConfig[breakpoint] &&
+            layoutSlotConfig[breakpoint].hasOwnProperty(configAttribute)) {
+            return (/** @type {?} */ (layoutSlotConfig[breakpoint]));
+        }
+        // find closest config
+        /** @type {?} */
+        const all = this.breakpointService.breakpoints;
+        for (const br of all.splice(0, all.indexOf(breakpoint))) {
+            if (layoutSlotConfig[br] &&
+                layoutSlotConfig[br].hasOwnProperty(configAttribute)) {
+                slotConfig = (/** @type {?} */ (layoutSlotConfig[br]));
+            }
+        }
+        return slotConfig;
+    }
+    /**
+     * @private
+     * @param {?} template
+     * @param {?=} section
+     * @return {?}
+     */
+    noConfigFound(template, section) {
+        if (section) {
+            if (!this.warnLogMessages[section + ':' + template]) {
+                console.warn(`no layout config found for section ${section} of template ${template}`);
+                this.warnLogMessages[section + ':' + template] = true;
+            }
+        }
+        else if (!this.warnLogMessages[template]) {
+            console.warn(`no layout config found for ${template}`);
+            this.warnLogMessages[template] = true;
+        }
+        return null;
+    }
+}
+PageLayoutService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+PageLayoutService.ctorParameters = () => [
+    { type: CmsService },
+    { type: LayoutConfig },
+    { type: BreakpointService }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PageLayoutComponent {
+    /**
+     * @param {?} el
+     * @param {?} renderer
+     * @param {?} pageLayoutService
+     */
+    constructor(el, renderer, pageLayoutService) {
+        this.el = el;
+        this.renderer = renderer;
+        this.pageLayoutService = pageLayoutService;
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        if (this.section) {
+            this.styleClass = this.section;
+        }
+    }
+    /**
+     * @return {?}
+     */
+    get slots$() {
+        return this.pageLayoutService.getSlots(this.section);
+    }
+    /**
+     * @return {?}
+     */
+    get templateName$() {
+        return this.pageLayoutService.templateName$.pipe(
+        // intercept the observable to keep a clean DOM tree
+        tap(name => {
+            this.styleClass = name;
+        }));
+    }
+    /**
+     * @param {?} cls
+     * @return {?}
+     */
+    set styleClass(cls) {
+        this.renderer.addClass(this.el.nativeElement, cls);
+    }
+}
+PageLayoutComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'cx-page-layout',
+                template: "<ng-container *cxOutlet=\"section || (templateName$ | async)\">\n  <ng-content></ng-content>\n  <cx-page-slot\n    *ngFor=\"let slot of (slots$ | async)\"\n    [position]=\"slot\"\n  ></cx-page-slot>\n</ng-container>\n",
+                changeDetection: ChangeDetectionStrategy.OnPush
+            }] }
+];
+/** @nocollapse */
+PageLayoutComponent.ctorParameters = () => [
+    { type: ElementRef },
+    { type: Renderer2 },
+    { type: PageLayoutService }
+];
+PageLayoutComponent.propDecorators = {
+    section: [{ type: Input }]
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CmsRoutesService {
+    /**
+     * @param {?} router
+     * @param {?} cmsMapping
+     */
+    constructor(router, cmsMapping) {
+        this.router = router;
+        this.cmsMapping = cmsMapping;
+    }
+    /**
+     * @param {?} url
+     * @return {?}
+     */
+    cmsRouteExist(url) {
+        /** @type {?} */
+        const isCmsDrivenRoute = url.startsWith('/');
+        if (!isCmsDrivenRoute) {
+            return false;
+        }
+        /** @type {?} */
+        const routePath = url.substr(1);
+        return (isCmsDrivenRoute &&
+            !!this.router.config.find((route) => route.data && route.data.cxCmsRouteContext && route.path === routePath));
+    }
+    /**
+     * Contains Cms driven routing logic intended for use use in guards, especially in canActivate method.
+     *
+     * Will return true, when logic wont have to modify routing (so canActivate could be easily resolved to true)
+     * or will return false, when routing configuration was updated and redirection to newly generated route was initiated.
+     *
+     * @param {?} pageContext
+     * @param {?} componentTypes
+     * @param {?} currentUrl
+     * @return {?}
+     */
+    handleCmsRoutesInGuard(pageContext, componentTypes, currentUrl) {
+        /** @type {?} */
+        const componentRoutes = this.cmsMapping.getRoutesForComponents(componentTypes);
+        if (componentRoutes.length) {
+            if (this.updateRouting(pageContext, componentRoutes)) {
+                this.router.navigateByUrl(currentUrl);
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * @private
+     * @param {?} pageContext
+     * @param {?} routes
+     * @return {?}
+     */
+    updateRouting(pageContext, routes) {
+        if (pageContext.type === PageType.CONTENT_PAGE &&
+            pageContext.id.startsWith('/') &&
+            pageContext.id.length > 1) {
+            /** @type {?} */
+            const newRoute = {
+                path: pageContext.id.substr(1),
+                component: PageLayoutComponent,
+                children: routes,
+                data: {
+                    cxCmsRouteContext: pageContext,
+                },
+            };
+            this.router.resetConfig([newRoute, ...this.router.config]);
+            return true;
+        }
+        return false;
+    }
+}
+CmsRoutesService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CmsRoutesService.ctorParameters = () => [
+    { type: Router },
+    { type: CmsMappingService }
+];
+/** @nocollapse */ CmsRoutesService.ngInjectableDef = defineInjectable({ factory: function CmsRoutesService_Factory() { return new CmsRoutesService(inject(Router), inject(CmsMappingService)); }, token: CmsRoutesService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CmsPageGuard {
+    /**
+     * @param {?} routingService
+     * @param {?} cmsService
+     * @param {?} cmsRoutes
+     * @param {?} cmsI18n
+     * @param {?} cmsGuards
+     */
+    constructor(routingService, cmsService, cmsRoutes, cmsI18n, cmsGuards) {
+        this.routingService = routingService;
+        this.cmsService = cmsService;
+        this.cmsRoutes = cmsRoutes;
+        this.cmsI18n = cmsI18n;
+        this.cmsGuards = cmsGuards;
+    }
+    /**
+     * @param {?} route
+     * @param {?} state
+     * @return {?}
+     */
+    canActivate(route, state) {
+        return this.routingService.getPageContext().pipe(switchMap(pageContext => this.cmsService.hasPage(pageContext).pipe(first(), withLatestFrom(of(pageContext)))), switchMap(([hasPage, pageContext]) => {
+            if (hasPage) {
+                return this.cmsService.getPageComponentTypes(pageContext).pipe(switchMap(componentTypes => this.cmsGuards
+                    .cmsPageCanActivate(componentTypes, route, state)
+                    .pipe(withLatestFrom(of(componentTypes)))), tap(([canActivate, componentTypes]) => {
+                    if (canActivate === true) {
+                        this.cmsI18n.loadNamespacesForComponents(componentTypes);
+                    }
+                }), map(([canActivate, componentTypes]) => {
+                    if (canActivate === true &&
+                        !route.data.cxCmsRouteContext &&
+                        !this.cmsRoutes.cmsRouteExist(pageContext.id)) {
+                        return this.cmsRoutes.handleCmsRoutesInGuard(pageContext, componentTypes, state.url);
+                    }
+                    return canActivate;
+                }));
+            }
+            else {
+                if (pageContext.id !== '/not-found') {
+                    this.routingService.go(['/not-found']);
+                }
+                return of(false);
+            }
+        }));
+    }
+}
+CmsPageGuard.guardName = 'CmsPageGuard';
+CmsPageGuard.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CmsPageGuard.ctorParameters = () => [
+    { type: RoutingService },
+    { type: CmsService },
+    { type: CmsRoutesService },
+    { type: CmsI18nService },
+    { type: CmsGuardsService }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const guards = [CmsPageGuard];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class OutletStyleService {
+    constructor() {
+        this.templateRefs = {};
+    }
+    /**
+     * @param {?} outlet
+     * @param {?} elem
+     * @return {?}
+     */
+    add(outlet, elem) {
+        this.templateRefs[outlet] = elem;
+    }
+    /**
+     * @param {?} outlet
+     * @return {?}
+     */
+    get(outlet) {
+        return this.templateRefs[outlet];
+    }
+}
+OutletStyleService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ OutletStyleService.ngInjectableDef = defineInjectable({ factory: function OutletStyleService_Factory() { return new OutletStyleService(); }, token: OutletStyleService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {string} */
+const OutletPosition = {
+    REPLACE: 'replace',
+    BEFORE: 'before',
+    AFTER: 'after',
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class OutletService {
+    constructor() {
+        this.templatesRefs = {};
+        this.templatesRefsBefore = {};
+        this.templatesRefsAfter = {};
+    }
+    /**
+     * @param {?} outlet
+     * @param {?} template
+     * @param {?=} position
+     * @return {?}
+     */
+    add(outlet, template, position = OutletPosition.REPLACE) {
+        if (position === OutletPosition.BEFORE) {
+            this.templatesRefsBefore[outlet] = template;
+        }
+        if (position === OutletPosition.REPLACE) {
+            this.templatesRefs[outlet] = template;
+        }
+        if (position === OutletPosition.AFTER) {
+            this.templatesRefsAfter[outlet] = template;
+        }
+    }
+    /**
+     * @param {?} outlet
+     * @param {?=} position
+     * @return {?}
+     */
+    get(outlet, position = OutletPosition.REPLACE) {
+        /** @type {?} */
+        let templateRef;
+        switch (position) {
+            case OutletPosition.BEFORE:
+                templateRef = this.templatesRefsBefore[outlet];
+                break;
+            case OutletPosition.AFTER:
+                templateRef = this.templatesRefsAfter[outlet];
+                break;
+            default:
+                templateRef = this.templatesRefs[outlet];
+        }
+        return templateRef;
+        // return this.templatesRefs[outlet] ? this.templatesRefs[outlet] : null;
+    }
+}
+OutletService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ OutletService.ngInjectableDef = defineInjectable({ factory: function OutletService_Factory() { return new OutletService(); }, token: OutletService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class OutletDirective {
+    /**
+     * @param {?} vcr
+     * @param {?} templateRef
+     * @param {?} outletService
+     * @param {?} outletStyleService
+     * @param {?} renderer
+     */
+    constructor(vcr, templateRef, outletService, outletStyleService, renderer) {
+        this.vcr = vcr;
+        this.templateRef = templateRef;
+        this.outletService = outletService;
+        this.outletStyleService = outletStyleService;
+        this.renderer = renderer;
+    }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    set cxOutletContext(value) {
+        this._context = value;
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        /** @type {?} */
+        const nodes = [];
+        nodes.push(...this.renderTemplate(OutletPosition.BEFORE));
+        nodes.push(...this.renderTemplate(OutletPosition.REPLACE, true));
+        nodes.push(...this.renderTemplate(OutletPosition.AFTER));
+        this.renderStyleLink(nodes);
+    }
+    /**
+     * @private
+     * @param {?} position
+     * @param {?=} replace
+     * @return {?}
+     */
+    renderTemplate(position, replace = false) {
+        /** @type {?} */
+        const nodes = [];
+        /** @type {?} */
+        const template = this.outletService.get(this.cxOutlet, position);
+        if (template || replace) {
+            /** @type {?} */
+            const ref = this.vcr.createEmbeddedView(template || this.templateRef, {
+                $implicit: this.context,
+            });
+            nodes.push(...ref.rootNodes);
+        }
+        return nodes;
+    }
+    /**
+     * @private
+     * @param {?} nodes
+     * @return {?}
+     */
+    renderStyleLink(nodes) {
+        /** @type {?} */
+        const styleElement = this.outletStyleService.get(this.cxOutlet);
+        if (styleElement) {
+            /** @type {?} */
+            let parentElement = nodes.find(node => node instanceof HTMLElement);
+            if (parentElement.shadowRoot) {
+                parentElement = parentElement.shadowRoot;
+            }
+            styleElement.nativeElement.rel = 'stylesheet';
+            this.renderer.appendChild(parentElement, styleElement.nativeElement);
+        }
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    get context() {
+        // return specific context if provided
+        if (this._context) {
+            return this._context;
+        }
+        /** @type {?} */
+        const ctx = ((/** @type {?} */ (this.vcr.injector))).view.context;
+        // the context might already be given $implicit
+        // by a parent *ngIf or *ngFor
+        return ctx.$implicit || ctx;
+    }
+}
+OutletDirective.decorators = [
+    { type: Directive, args: [{
+                selector: '[cxOutlet]',
+            },] }
+];
+/** @nocollapse */
+OutletDirective.ctorParameters = () => [
+    { type: ViewContainerRef },
+    { type: TemplateRef },
+    { type: OutletService },
+    { type: OutletStyleService },
+    { type: Renderer2 }
+];
+OutletDirective.propDecorators = {
+    cxOutlet: [{ type: Input }],
+    cxOutletContext: [{ type: Input }]
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class OutletModule {
+}
+OutletModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule],
+                declarations: [OutletDirective],
+                providers: [OutletService],
+                exports: [OutletDirective],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CmsModule$1 {
+}
+CmsModule$1.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    ConfigModule.withConfig(defaultCmsModuleConfig),
+                    OutletModule,
+                    CmsModule,
+                ],
+                providers: [...guards, { provide: CmsConfig, useExisting: Config }],
+                declarations: [],
+                exports: [OutletDirective],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PageSlotComponent {
+    /**
+     * @param {?} cmsService
+     * @param {?} dynamicAttributeService
+     * @param {?} renderer
+     * @param {?} hostElement
+     * @param {?} cmsMapping
+     */
+    constructor(cmsService, dynamicAttributeService, renderer, hostElement, cmsMapping) {
+        this.cmsService = cmsService;
+        this.dynamicAttributeService = dynamicAttributeService;
+        this.renderer = renderer;
+        this.hostElement = hostElement;
+        this.cmsMapping = cmsMapping;
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        // add the position name as a css class so that
+        // layout can be applied to it, using the position based class.
+        this.renderer.addClass(this.hostElement.nativeElement, this.position);
+    }
+    /**
+     * returns an observable with `ContentSlotData` for the current position
+     * @return {?}
+     */
+    get slot$() {
+        return this.cmsService
+            .getContentSlot(this.position)
+            .pipe(tap(slot => this.addSmartEditSlotClass(slot)));
+    }
+    /**
+     * returns an observable with components (`ContentSlotComponentData[]`)
+     * for the current slot
+     * @return {?}
+     */
+    get components$() {
+        return this.slot$.pipe(map(slot => (slot && slot.components ? slot.components : [])), tap(components => this.addComponentClass(components)));
+    }
+    // add a class to indicate whether the class is empty or not
+    /**
+     * @private
+     * @param {?} components
+     * @return {?}
+     */
+    addComponentClass(components) {
+        if (components && components.length > 0) {
+            this.renderer.addClass(this.hostElement.nativeElement, 'has-components');
+        }
+    }
+    /**
+     * @private
+     * @param {?} slot
+     * @return {?}
+     */
+    addSmartEditSlotClass(slot) {
+        if (this.cmsService.isLaunchInSmartEdit()) {
+            this.addSmartEditContract(slot);
+        }
+    }
+    /**
+     * @private
+     * @param {?} slot
+     * @return {?}
+     */
+    addSmartEditContract(slot) {
+        this.dynamicAttributeService.addDynamicAttributes(slot.properties, this.hostElement.nativeElement, this.renderer);
+    }
+}
+PageSlotComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'cx-page-slot',
+                template: "<ng-container *cxOutlet=\"position\">\n  <ng-container *ngFor=\"let component of (components$ | async)\">\n    <ng-container\n      *cxOutlet=\"component.flexType\"\n      [cxComponentWrapper]=\"component\"\n    >\n    </ng-container>\n  </ng-container>\n</ng-container>\n",
+                changeDetection: ChangeDetectionStrategy.OnPush
+            }] }
+];
+/** @nocollapse */
+PageSlotComponent.ctorParameters = () => [
+    { type: CmsService },
+    { type: DynamicAttributeService },
+    { type: Renderer2 },
+    { type: ElementRef },
+    { type: CmsMappingService }
+];
+PageSlotComponent.propDecorators = {
+    position: [{ type: Input }]
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ * @template T
+ */
+class CmsComponentData {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ComponentWrapperDirective {
+    /**
+     * @param {?} vcr
+     * @param {?} componentMapper
+     * @param {?} injector
+     * @param {?} cmsService
+     * @param {?} dynamicAttributeService
+     * @param {?} renderer
+     * @param {?} cd
+     * @param {?} config
+     * @param {?} platformId
+     */
+    constructor(vcr, componentMapper, injector, cmsService, dynamicAttributeService, renderer, cd, config, platformId) {
+        this.vcr = vcr;
+        this.componentMapper = componentMapper;
+        this.injector = injector;
+        this.cmsService = cmsService;
+        this.dynamicAttributeService = dynamicAttributeService;
+        this.renderer = renderer;
+        this.cd = cd;
+        this.config = config;
+        this.platformId = platformId;
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        if (!this.shouldRenderComponent()) {
+            return;
+        }
+        if (this.componentMapper.isWebComponent(this.cxComponentWrapper.flexType)) {
+            this.launchWebComponent();
+        }
+        else {
+            this.launchComponent();
+        }
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    shouldRenderComponent() {
+        /** @type {?} */
+        const isSSR = isPlatformServer(this.platformId);
+        /** @type {?} */
+        const isComponentDisabledInSSR = (this.config.cmsComponents[this.cxComponentWrapper.flexType] || {}).disableSSR;
+        return !(isSSR && isComponentDisabledInSSR);
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    launchComponent() {
+        /** @type {?} */
+        const factory = this.componentMapper.getComponentFactoryByCode(this.cxComponentWrapper.flexType);
+        if (factory) {
+            this.cmpRef = this.vcr.createComponent(factory, undefined, this.getInjectorForComponent());
+            this.cd.detectChanges();
+            if (this.cmsService.isLaunchInSmartEdit()) {
+                this.addSmartEditContract(this.cmpRef.location.nativeElement);
+            }
+        }
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    launchWebComponent() {
+        return __awaiter(this, void 0, void 0, function* () {
+            /** @type {?} */
+            const elementName = yield this.componentMapper.initWebComponent(this.cxComponentWrapper.flexType, this.renderer);
+            if (elementName) {
+                this.webElement = this.renderer.createElement(elementName);
+                this.webElement.cxApi = Object.assign({}, this.injector.get(CxApiService), { CmsComponentData: this.getCmsDataForComponent() });
+                this.renderer.appendChild(this.vcr.element.nativeElement.parentElement, this.webElement);
+            }
+        });
+    }
+    /**
+     * @private
+     * @template T
+     * @return {?}
+     */
+    getCmsDataForComponent() {
+        return {
+            uid: this.cxComponentWrapper.uid,
+            data$: this.cmsService.getComponentData(this.cxComponentWrapper.uid),
+        };
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    getInjectorForComponent() {
+        /** @type {?} */
+        const configProviders = (this.config.cmsComponents[this.cxComponentWrapper.flexType] || {})
+            .providers || [];
+        return Injector.create({
+            providers: [
+                {
+                    provide: CmsComponentData,
+                    useValue: this.getCmsDataForComponent(),
+                },
+                ...configProviders,
+            ],
+            parent: this.injector,
+        });
+    }
+    /**
+     * @private
+     * @param {?} element
+     * @return {?}
+     */
+    addSmartEditContract(element) {
+        this.dynamicAttributeService.addDynamicAttributes(this.cxComponentWrapper.properties, element, this.renderer);
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        if (this.cmpRef) {
+            this.cmpRef.destroy();
+        }
+        if (this.webElement) {
+            this.renderer.removeChild(this.vcr.element.nativeElement.parentElement, this.webElement);
+        }
+    }
+}
+ComponentWrapperDirective.decorators = [
+    { type: Directive, args: [{
+                selector: '[cxComponentWrapper]',
+            },] }
+];
+/** @nocollapse */
+ComponentWrapperDirective.ctorParameters = () => [
+    { type: ViewContainerRef },
+    { type: ComponentMapperService },
+    { type: Injector },
+    { type: CmsService },
+    { type: DynamicAttributeService },
+    { type: Renderer2 },
+    { type: ChangeDetectorRef },
+    { type: CmsConfig },
+    { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
+];
+ComponentWrapperDirective.propDecorators = {
+    cxComponentWrapper: [{ type: Input }]
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PageComponentModule {
+}
+PageComponentModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule],
+                providers: [],
+                declarations: [ComponentWrapperDirective],
+                exports: [ComponentWrapperDirective],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PageSlotModule {
+}
+PageSlotModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, OutletModule, PageComponentModule],
+                providers: [],
+                declarations: [PageSlotComponent],
+                exports: [PageSlotComponent],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PageLayoutModule {
+}
+PageLayoutModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, CmsModule$1, PageSlotModule],
+                declarations: [PageLayoutComponent],
+                providers: [PageLayoutService],
+                exports: [PageLayoutComponent],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class LogoutModule {
+}
+LogoutModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    RouterModule.forChild([
+                        {
+                            path: 'logout',
+                            canActivate: [LogoutGuard],
+                            component: PageLayoutComponent,
+                        },
+                    ]),
+                ],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const cartComponents = {
+    emptyCartText: {
+        flexType: 'CMSParagraphComponent',
+        typeCode: 'CMSParagraphComponent',
+        content: `
+      <h2>Your shopping cart is empty</h2>
+      <p>Suggestions</p>
+      <ul>
+          <li>
+          Browse our products by selecting a category above
+          </li>
+      </ul>`,
+    },
+};
+/** @type {?} */
+const defaultCartPageConfig = {
+    ignoreBackend: false,
+    pageId: 'cartPage',
+    type: 'ContentPage',
+    template: 'CartPageTemplate',
+    title: 'Cart',
+    slots: {
+        EmptyCartMiddleContent: {
+            componentIds: ['emptyCartText'],
+        },
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const headerComponents = {
+    SkipLinkComponent: {
+        typeCode: 'SkipLinkComponent',
+        flexType: 'SkipLinkComponent',
+        uid: 'SkipLinkComponent',
+    },
+    HamburgerMenuComponent: {
+        typeCode: 'HamburgerMenuComponent',
+        flexType: 'HamburgerMenuComponent',
+        uid: 'HamburgerMenuComponent',
+    },
+    LanguageComponent: {
+        typeCode: 'CMSSiteContextComponent',
+        flexType: 'CMSSiteContextComponent',
+        context: 'LANGUAGE',
+    },
+    CurrencyComponent: {
+        typeCode: 'CMSSiteContextComponent',
+        flexType: 'CMSSiteContextComponent',
+        context: 'CURRENCY',
+    },
+    StoreFinder: {
+        typeCode: 'CMSLinkComponent',
+        flexType: 'CMSLinkComponent',
+        linkName: 'Find a Store',
+        url: '/store-finder',
+    },
+    BreadcrumbComponent: {
+        typeCode: 'BreadcrumbComponent',
+        flexType: 'BreadcrumbComponent',
+    },
+    Logo: {
+        typeCode: 'SimpleBannerComponent',
+        flexType: 'SimpleBannerComponent',
+        uid: 'logo',
+        media: {
+            mime: 'svg/image/svg+xml',
+            url: 'https://www.sap.com/dam/application/shared/logos/sap-logo-svg.svg',
+        },
+        urlLink: '/',
+    },
+    SearchBox: {
+        typeCode: 'SearchBoxComponent',
+        flexType: 'SearchBoxComponent',
+        uid: 'SearchBoxComponent',
+    },
+    MiniCart: {
+        typeCode: 'MiniCartComponent',
+        flexType: 'MiniCartComponent',
+        uid: 'MiniCartComponent',
+    },
+    LoginComponent: {
+        typeCode: 'LoginComponent',
+        flexType: 'LoginComponent',
+        uid: 'LoginComponent',
+    },
+    CategoryNavigationComponent: {
+        typeCode: 'CategoryNavigationComponent',
+        flexType: 'CategoryNavigationComponent',
+        uid: 'ElectronicsCategoryNavComponent',
+        navigationNode: {
+            uid: 'ElectronicsCategoryNavNode',
+            children: [
+                {
+                    uid: 'CameraLensesNavNode',
+                    title: 'Electronic catalog',
+                    entries: [
+                        {
+                            itemId: 'CameraLensesCategoryLink',
+                            itemSuperType: 'AbstractCMSComponent',
+                            itemType: 'CMSLinkComponent',
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+};
+/** @type {?} */
+const defaultPageHeaderConfig = {
+    PreHeader: {
+        componentIds: ['SkipLinkComponent', 'HamburgerMenuComponent'],
+    },
+    SiteContext: {
+        componentIds: ['LanguageComponent', 'CurrencyComponent'],
+    },
+    SiteLinks: {
+        componentIds: ['StoreFinder'],
+    },
+    SiteLogo: {
+        componentIds: ['Logo'],
+    },
+    SearchBox: {
+        componentIds: ['SearchBox'],
+    },
+    MiniCart: {
+        componentIds: ['MiniCart'],
+    },
+    SiteLogin: {
+        componentIds: ['LoginComponent'],
+    },
+    NavigationBar: {
+        componentIds: ['CategoryNavigationComponent'],
+    },
+    BottomHeaderSlot: {
+        componentIds: ['BreadcrumbComponent'],
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function defaultCmsContentConfig() {
+    return {
+        cmsStructure: {
+            components: Object.assign({}, headerComponents, cartComponents),
+            slots: Object.assign({}, defaultPageHeaderConfig),
+            pages: [defaultCartPageConfig],
+        },
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SeoMetaService {
+    /**
+     * @param {?} ngTitle
+     * @param {?} ngMeta
+     * @param {?} pageMetaService
+     */
+    constructor(ngTitle, ngMeta, pageMetaService) {
+        this.ngTitle = ngTitle;
+        this.ngMeta = ngMeta;
+        this.pageMetaService = pageMetaService;
+    }
+    /**
+     * @return {?}
+     */
+    init() {
+        this.pageMetaService
+            .getMeta()
+            .pipe(filter(Boolean))
+            .subscribe((meta) => (this.meta = meta));
+    }
+    /**
+     * @protected
+     * @param {?} meta
+     * @return {?}
+     */
+    set meta(meta) {
+        this.title = meta.title;
+        this.description = meta.description;
+        this.image = meta.image;
+        this.robots = meta.robots || [PageRobotsMeta.INDEX, PageRobotsMeta.FOLLOW];
+    }
+    /**
+     * @protected
+     * @param {?} title
+     * @return {?}
+     */
+    set title(title) {
+        this.ngTitle.setTitle(title || '');
+    }
+    /**
+     * @protected
+     * @param {?} value
+     * @return {?}
+     */
+    set description(value) {
+        this.addTag({ name: 'description', content: value });
+    }
+    /**
+     * @protected
+     * @param {?} imageUrl
+     * @return {?}
+     */
+    set image(imageUrl) {
+        if (imageUrl) {
+            this.addTag({ name: 'og:image', content: imageUrl });
+        }
+    }
+    /**
+     * @protected
+     * @param {?} value
+     * @return {?}
+     */
+    set robots(value) {
+        if (value) {
+            this.addTag({ name: 'robots', content: value.join(', ') });
+        }
+    }
+    /**
+     * @protected
+     * @param {?} meta
+     * @return {?}
+     */
+    addTag(meta) {
+        if (meta.content) {
+            this.ngMeta.updateTag(meta);
+        }
+    }
+}
+SeoMetaService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+SeoMetaService.ctorParameters = () => [
+    { type: Title },
+    { type: Meta },
+    { type: PageMetaService }
+];
+/** @nocollapse */ SeoMetaService.ngInjectableDef = defineInjectable({ factory: function SeoMetaService_Factory() { return new SeoMetaService(inject(Title), inject(Meta), inject(PageMetaService)); }, token: SeoMetaService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} injector
+ * @return {?}
+ */
+function initSeoService(injector) {
+    /** @type {?} */
+    const result = () => {
+        /** @type {?} */
+        const service = injector.get(SeoMetaService);
+        service.init();
+    };
+    return result;
+}
+class SeoModule {
+}
+SeoModule.decorators = [
+    { type: NgModule, args: [{
+                providers: [
+                    {
+                        provide: APP_INITIALIZER,
+                        useFactory: initSeoService,
+                        deps: [Injector],
+                        multi: true,
+                    },
+                ],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class HamburgerMenuService {
+    /**
+     * @param {?} router
+     */
+    constructor(router) {
+        this.isExpanded = new BehaviorSubject(false);
+        router.events
+            .pipe(filter(event => event instanceof NavigationStart))
+            .subscribe(() => {
+            this.toggle(true);
+        });
+    }
+    /**
+     * toggles the expand state of the hamburger menu
+     * @param {?=} forceCollapse
+     * @return {?}
+     */
+    toggle(forceCollapse) {
+        if (forceCollapse) {
+            this.isExpanded.next(false);
+        }
+        else {
+            this.isExpanded.next(!this.isExpanded.value);
+        }
+    }
+}
+HamburgerMenuService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+HamburgerMenuService.ctorParameters = () => [
+    { type: Router }
+];
+/** @nocollapse */ HamburgerMenuService.ngInjectableDef = defineInjectable({ factory: function HamburgerMenuService_Factory() { return new HamburgerMenuService(inject(Router)); }, token: HamburgerMenuService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class HamburgerMenuComponent {
+    /**
+     * @param {?} hamburgerMenuService
+     */
+    constructor(hamburgerMenuService) {
+        this.hamburgerMenuService = hamburgerMenuService;
+    }
+    /**
+     * @return {?}
+     */
+    toggle() {
+        this.hamburgerMenuService.toggle();
+    }
+    /**
+     * @return {?}
+     */
+    get isExpanded() {
+        return this.hamburgerMenuService.isExpanded;
+    }
+}
+HamburgerMenuComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'cx-hamburger-menu',
+                template: "<button\n  class=\"cx-hamburger\"\n  type=\"button\"\n  (click)=\"toggle()\"\n  [class.is-active]=\"isExpanded | async\"\n  [attr.aria-expanded]=\"isExpanded | async\"\n  aria-label=\"Menu\"\n  aria-controls=\"header-account-container, header-categories-container, header-locale-container\"\n>\n  <span class=\"hamburger-box\">\n    <span class=\"hamburger-inner\"></span>\n  </span>\n</button>\n",
+                changeDetection: ChangeDetectionStrategy.OnPush
+            }] }
+];
+/** @nocollapse */
+HamburgerMenuComponent.ctorParameters = () => [
+    { type: HamburgerMenuService }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class HamburgerMenuModule {
+}
+HamburgerMenuModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    ConfigModule.withConfig((/** @type {?} */ ({
+                        cmsComponents: {
+                            HamburgerMenuComponent: { selector: 'cx-hamburger-menu' },
+                        },
+                    }))),
+                ],
+                declarations: [HamburgerMenuComponent],
+                entryComponents: [HamburgerMenuComponent],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SkipLinkComponent {
+}
+SkipLinkComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'cx-skip-link',
+                template: "<a class=\"sr-only sr-only-focusable\" href=\"#header-categories-container\">\n  {{ 'common.action.skipToNavigation' | cxTranslate }}\n</a>\n<a class=\"sr-only sr-only-focusable\" href=\"#mini-cart\">{{\n  'common.action.skipToShoppingCart' | cxTranslate\n}}</a>\n<a class=\"sr-only sr-only-focusable\" href=\"#main-content\">{{\n  'common.action.skipToMainContent' | cxTranslate\n}}</a>\n<a class=\"sr-only sr-only-focusable\" href=\"#footer\">{{\n  'common.action.skipToFooter' | cxTranslate\n}}</a>\n",
+                styles: [":host{position:absolute;top:0;left:0}"]
+            }] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SkipLinkModule {
+}
+SkipLinkModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    ConfigModule.withConfig((/** @type {?} */ ({
+                        cmsComponents: {
+                            SkipLinkComponent: { selector: 'cx-skip-link' },
+                        },
+                    }))),
+                    I18nModule,
+                ],
+                declarations: [SkipLinkComponent],
+                entryComponents: [SkipLinkComponent],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -3061,7 +4866,7 @@ OrderConfirmationPageGuard.ctorParameters = () => [
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const guards = [OrderConfirmationPageGuard];
+const guards$1 = [OrderConfirmationPageGuard];
 
 /**
  * @fileoverview added by tsickle
@@ -3077,7 +4882,7 @@ CheckoutComponentModule.decorators = [
                     CartComponentModule,
                     CheckoutModule,
                 ],
-                providers: [...guards],
+                providers: [...guards$1],
             },] }
 ];
 
@@ -3409,1282 +5214,6 @@ OrderConfirmationModule.decorators = [
                 ],
                 declarations: [OrderConfirmationComponent],
                 exports: [OrderConfirmationComponent],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CmsMappingService {
-    /**
-     * @param {?} config
-     * @param {?} platformId
-     */
-    constructor(config, platformId) {
-        this.config = config;
-        this.platformId = platformId;
-    }
-    /**
-     * @param {?} flexType
-     * @return {?}
-     */
-    isComponentEnabled(flexType) {
-        /** @type {?} */
-        const isSSR = isPlatformServer(this.platformId);
-        /** @type {?} */
-        const isComponentDisabledInSSR = (this.config.cmsComponents[flexType] || {})
-            .disableSSR;
-        return !(isSSR && isComponentDisabledInSSR);
-    }
-    /**
-     * @param {?} componentTypes
-     * @return {?}
-     */
-    getRoutesForComponents(componentTypes) {
-        /** @type {?} */
-        const routes = [];
-        for (const componentType of componentTypes) {
-            if (this.isComponentEnabled(componentType)) {
-                routes.push(...this.getRoutesForComponent(componentType));
-            }
-        }
-        return routes;
-    }
-    /**
-     * @param {?} componentTypes
-     * @return {?}
-     */
-    getGuardsForComponents(componentTypes) {
-        /** @type {?} */
-        const guards = new Set();
-        for (const componentType of componentTypes) {
-            this.getGuardsForComponent(componentType).forEach(guard => guards.add(guard));
-        }
-        return Array.from(guards);
-    }
-    /**
-     * @param {?} componentTypes
-     * @return {?}
-     */
-    getI18nKeysForComponents(componentTypes) {
-        /** @type {?} */
-        const namespaces = new Set();
-        for (const componentType of componentTypes) {
-            if (this.isComponentEnabled(componentType)) {
-                this.getI18nKeysForComponent(componentType).forEach(namespace => namespaces.add(namespace));
-            }
-        }
-        return Array.from(namespaces);
-    }
-    /**
-     * @private
-     * @param {?} componentType
-     * @return {?}
-     */
-    getRoutesForComponent(componentType) {
-        /** @type {?} */
-        const mappingConfig = this.config.cmsComponents[componentType];
-        return (mappingConfig && mappingConfig.childRoutes) || [];
-    }
-    /**
-     * @private
-     * @param {?} componentType
-     * @return {?}
-     */
-    getGuardsForComponent(componentType) {
-        /** @type {?} */
-        const mappingConfig = this.config.cmsComponents[componentType];
-        return (mappingConfig && mappingConfig.guards) || [];
-    }
-    /**
-     * @private
-     * @param {?} componentType
-     * @return {?}
-     */
-    getI18nKeysForComponent(componentType) {
-        /** @type {?} */
-        const mappingConfig = this.config.cmsComponents[componentType];
-        return (mappingConfig && mappingConfig.i18nKeys) || [];
-    }
-}
-CmsMappingService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-CmsMappingService.ctorParameters = () => [
-    { type: CmsConfig },
-    { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
-];
-/** @nocollapse */ CmsMappingService.ngInjectableDef = defineInjectable({ factory: function CmsMappingService_Factory() { return new CmsMappingService(inject(CmsConfig), inject(PLATFORM_ID)); }, token: CmsMappingService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CmsGuardsService {
-    /**
-     * @param {?} cmsMapping
-     * @param {?} injector
-     */
-    constructor(cmsMapping, injector) {
-        this.cmsMapping = cmsMapping;
-        this.injector = injector;
-    }
-    /**
-     * @param {?} componentTypes
-     * @param {?} route
-     * @param {?} state
-     * @return {?}
-     */
-    cmsPageCanActivate(componentTypes, route, state) {
-        /** @type {?} */
-        const guards = this.cmsMapping.getGuardsForComponents(componentTypes);
-        if (guards.length) {
-            /** @type {?} */
-            const canActivateObservables = guards.map(guardClass => {
-                /** @type {?} */
-                const guard = this.injector.get(guardClass, null);
-                if (isCanActivate(guard)) {
-                    return wrapIntoObservable(guard.canActivate(route, state)).pipe(first());
-                }
-                else {
-                    throw new Error('Invalid CanActivate guard in cmsMapping');
-                }
-            });
-            return concat(...canActivateObservables).pipe(skipWhile((canActivate) => canActivate === true), endWith(true), first());
-        }
-        else {
-            return of(true);
-        }
-    }
-}
-CmsGuardsService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-CmsGuardsService.ctorParameters = () => [
-    { type: CmsMappingService },
-    { type: Injector }
-];
-/** @nocollapse */ CmsGuardsService.ngInjectableDef = defineInjectable({ factory: function CmsGuardsService_Factory() { return new CmsGuardsService(inject(CmsMappingService), inject(INJECTOR)); }, token: CmsGuardsService, providedIn: "root" });
-/**
- * @template T
- * @param {?} value
- * @return {?}
- */
-function wrapIntoObservable(value) {
-    if (isObservable(value)) {
-        return value;
-    }
-    if (isPromise(value)) {
-        return from(Promise.resolve(value));
-    }
-    return of(value);
-}
-/**
- * @param {?} obj
- * @return {?}
- */
-function isPromise(obj) {
-    return !!obj && typeof obj.then === 'function';
-}
-/**
- * @param {?} guard
- * @return {?}
- */
-function isCanActivate(guard) {
-    return guard && isFunction(guard.canActivate);
-}
-/**
- * @template T
- * @param {?} v
- * @return {?}
- */
-function isFunction(v) {
-    return typeof v === 'function';
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CmsI18nService {
-    /**
-     * @param {?} cmsMapping
-     * @param {?} translation
-     * @param {?} translationNamespace
-     */
-    constructor(cmsMapping, translation, translationNamespace) {
-        this.cmsMapping = cmsMapping;
-        this.translation = translation;
-        this.translationNamespace = translationNamespace;
-    }
-    /**
-     * @param {?} componentTypes
-     * @return {?}
-     */
-    loadNamespacesForComponents(componentTypes) {
-        /** @type {?} */
-        const i18nKeys = this.cmsMapping.getI18nKeysForComponents(componentTypes);
-        /** @type {?} */
-        const i18nNamespaces = new Set();
-        for (const key of i18nKeys) {
-            i18nNamespaces.add(this.translationNamespace.getNamespace(key));
-        }
-        this.translation.loadNamespaces(Array.from(i18nNamespaces));
-    }
-}
-CmsI18nService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-CmsI18nService.ctorParameters = () => [
-    { type: CmsMappingService },
-    { type: TranslationService },
-    { type: TranslationNamespaceService }
-];
-/** @nocollapse */ CmsI18nService.ngInjectableDef = defineInjectable({ factory: function CmsI18nService_Factory() { return new CmsI18nService(inject(CmsMappingService), inject(TranslationService), inject(TranslationNamespaceService)); }, token: CmsI18nService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {string} */
-const BREAKPOINT = {
-    xs: 'xs',
-    sm: 'sm',
-    md: 'md',
-    lg: 'lg',
-    xl: 'xl',
-};
-/**
- * @abstract
- */
-class LayoutConfig {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class BreakpointService {
-    /**
-     * @param {?} winRef
-     * @param {?} config
-     */
-    constructor(winRef, config) {
-        this.winRef = winRef;
-        this.config = config;
-    }
-    /**
-     * @return {?}
-     */
-    get breakpoint$() {
-        if (!this.window) {
-            return of(BREAKPOINT.xs);
-        }
-        return fromEvent(this.window, 'resize').pipe(debounceTime(300), startWith({ target: this.window }), map(event => this.getBreakpoint(((/** @type {?} */ (event.target))).innerWidth)), distinctUntilChanged());
-    }
-    /**
-     * @return {?}
-     */
-    get breakpoints() {
-        return [
-            BREAKPOINT.xs,
-            BREAKPOINT.sm,
-            BREAKPOINT.md,
-            BREAKPOINT.lg,
-            BREAKPOINT.xl,
-        ];
-    }
-    /**
-     * @protected
-     * @param {?} windowWidth
-     * @return {?}
-     */
-    getBreakpoint(windowWidth) {
-        /** @type {?} */
-        const breakpoint = this.getClosest(windowWidth);
-        return BREAKPOINT[breakpoint || BREAKPOINT.lg];
-    }
-    /**
-     * @protected
-     * @param {?=} windowWidth
-     * @return {?}
-     */
-    getClosest(windowWidth) {
-        if (!windowWidth) {
-            windowWidth = this.window.innerWidth;
-        }
-        return windowWidth < this.getSize(BREAKPOINT.xs)
-            ? BREAKPOINT.xs
-            : this.breakpoints.reverse().find(br => windowWidth >= this.getSize(br));
-    }
-    /**
-     * @protected
-     * @param {?} breakpoint
-     * @return {?}
-     */
-    getSize(breakpoint) {
-        return this.config.breakpoints[breakpoint];
-    }
-    /**
-     * @return {?}
-     */
-    get window() {
-        return this.winRef.nativeWindow;
-    }
-}
-BreakpointService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-BreakpointService.ctorParameters = () => [
-    { type: WindowRef },
-    { type: LayoutConfig }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class PageLayoutService {
-    /**
-     * @param {?} cms
-     * @param {?} config
-     * @param {?} breakpointService
-     */
-    constructor(cms, config, breakpointService) {
-        this.cms = cms;
-        this.config = config;
-        this.breakpointService = breakpointService;
-        // we print warn messages on missing layout configs
-        // only once to not polute the console log
-        this.warnLogMessages = {};
-    }
-    // TODO:
-    // distinctUntilChanged is not enough here, probably because
-    // we use the startWith operator in the breakpoint service which
-    // doesn't seem to work well with distinctUntilChanged, see
-    // https://github.com/ReactiveX/rxjs/issues/4030
-    /**
-     * @param {?=} section
-     * @return {?}
-     */
-    getSlots(section) {
-        return this.breakpointService.breakpoint$.pipe(switchMap(breakpoint => this.page$.pipe(map(page => this.getSlotConfig(page.template, 'slots', section, breakpoint)), filter(Boolean), map(config => config.slots))), distinctUntilChanged());
-    }
-    /**
-     * @return {?}
-     */
-    get page$() {
-        return this.cms.getCurrentPage().pipe(filter(Boolean));
-    }
-    /**
-     * @return {?}
-     */
-    get templateName$() {
-        return this.page$.pipe(filter(page => !!page.template), map((page) => page.template));
-    }
-    /**
-     * load slots from the layout configuration. The breakpoint is used
-     * to load a specific configuration for the given breakpoint. If there's
-     * no configuration available for the given breakpoint the default slot
-     * configuration is returned.
-     * @protected
-     * @param {?} templateUid
-     * @param {?} configAttribute
-     * @param {?=} section
-     * @param {?=} breakpoint
-     * @return {?}
-     */
-    getSlotConfig(templateUid, configAttribute, section, breakpoint) {
-        /** @type {?} */
-        const pageTemplateConfig = this.config.layoutSlots[templateUid];
-        if (section) {
-            return this.getSlotConfigForSection(templateUid, configAttribute, section, breakpoint);
-        }
-        if (!pageTemplateConfig) {
-            return this.noConfigFound(templateUid);
-        }
-        else {
-            return this.getResponsiveSlotConfig((/** @type {?} */ (pageTemplateConfig)), configAttribute, breakpoint);
-        }
-    }
-    /**
-     * @protected
-     * @param {?} templateUid
-     * @param {?} configAttribute
-     * @param {?=} section
-     * @param {?=} breakpoint
-     * @return {?}
-     */
-    getSlotConfigForSection(templateUid, configAttribute, section, breakpoint) {
-        /** @type {?} */
-        const pageTemplateConfig = this.config.layoutSlots[templateUid];
-        if (!pageTemplateConfig) {
-            return null;
-        }
-        // if there's no section config on the page layout
-        // we fall back to the global section config
-        /** @type {?} */
-        const sectionConfig = pageTemplateConfig[section]
-            ? pageTemplateConfig[section]
-            : this.config.layoutSlots[section];
-        if (!sectionConfig) {
-            return null;
-        }
-        /** @type {?} */
-        const responsiveConfig = this.getResponsiveSlotConfig((/** @type {?} */ (sectionConfig)), configAttribute, breakpoint);
-        if (responsiveConfig.hasOwnProperty(configAttribute)) {
-            return responsiveConfig;
-        }
-        else if (pageTemplateConfig[section].hasOwnProperty(configAttribute)) {
-            return pageTemplateConfig[section];
-        }
-        else if (this.config.layoutSlots[section]) {
-            return (/** @type {?} */ (this.config.layoutSlots[section]));
-        }
-    }
-    /**
-     * Returns a list of slots for a breakpoint specific configuratoin
-     * If there's no specific configuration for the breakpoint,
-     * the closest available configuration will be returned.
-     * @protected
-     * @param {?} layoutSlotConfig
-     * @param {?} configAttribute
-     * @param {?=} breakpoint
-     * @return {?}
-     */
-    getResponsiveSlotConfig(layoutSlotConfig, configAttribute, breakpoint) {
-        /** @type {?} */
-        let slotConfig = (/** @type {?} */ (layoutSlotConfig));
-        // fallback to default slot config
-        if (!breakpoint) {
-            return slotConfig;
-        }
-        // we have a config for the specific breakpoint
-        if (layoutSlotConfig[breakpoint] &&
-            layoutSlotConfig[breakpoint].hasOwnProperty(configAttribute)) {
-            return (/** @type {?} */ (layoutSlotConfig[breakpoint]));
-        }
-        // find closest config
-        /** @type {?} */
-        const all = this.breakpointService.breakpoints;
-        for (const br of all.splice(0, all.indexOf(breakpoint))) {
-            if (layoutSlotConfig[br] &&
-                layoutSlotConfig[br].hasOwnProperty(configAttribute)) {
-                slotConfig = (/** @type {?} */ (layoutSlotConfig[br]));
-            }
-        }
-        return slotConfig;
-    }
-    /**
-     * @private
-     * @param {?} template
-     * @param {?=} section
-     * @return {?}
-     */
-    noConfigFound(template, section) {
-        if (section) {
-            if (!this.warnLogMessages[section + ':' + template]) {
-                console.warn(`no layout config found for section ${section} of template ${template}`);
-                this.warnLogMessages[section + ':' + template] = true;
-            }
-        }
-        else if (!this.warnLogMessages[template]) {
-            console.warn(`no layout config found for ${template}`);
-            this.warnLogMessages[template] = true;
-        }
-        return null;
-    }
-}
-PageLayoutService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-PageLayoutService.ctorParameters = () => [
-    { type: CmsService },
-    { type: LayoutConfig },
-    { type: BreakpointService }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class PageLayoutComponent {
-    /**
-     * @param {?} el
-     * @param {?} renderer
-     * @param {?} pageLayoutService
-     */
-    constructor(el, renderer, pageLayoutService) {
-        this.el = el;
-        this.renderer = renderer;
-        this.pageLayoutService = pageLayoutService;
-    }
-    /**
-     * @return {?}
-     */
-    ngOnInit() {
-        if (this.section) {
-            this.styleClass = this.section;
-        }
-    }
-    /**
-     * @return {?}
-     */
-    get slots$() {
-        return this.pageLayoutService.getSlots(this.section);
-    }
-    /**
-     * @return {?}
-     */
-    get templateName$() {
-        return this.pageLayoutService.templateName$.pipe(
-        // intercept the observable to keep a clean DOM tree
-        tap(name => {
-            this.styleClass = name;
-        }));
-    }
-    /**
-     * @param {?} cls
-     * @return {?}
-     */
-    set styleClass(cls) {
-        this.renderer.addClass(this.el.nativeElement, cls);
-    }
-}
-PageLayoutComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'cx-page-layout',
-                template: "<ng-container *cxOutlet=\"section || (templateName$ | async)\">\n  <ng-content></ng-content>\n  <cx-page-slot\n    *ngFor=\"let slot of (slots$ | async)\"\n    [position]=\"slot\"\n  ></cx-page-slot>\n</ng-container>\n",
-                changeDetection: ChangeDetectionStrategy.OnPush
-            }] }
-];
-/** @nocollapse */
-PageLayoutComponent.ctorParameters = () => [
-    { type: ElementRef },
-    { type: Renderer2 },
-    { type: PageLayoutService }
-];
-PageLayoutComponent.propDecorators = {
-    section: [{ type: Input }]
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CmsRoutesService {
-    /**
-     * @param {?} router
-     * @param {?} cmsMapping
-     */
-    constructor(router, cmsMapping) {
-        this.router = router;
-        this.cmsMapping = cmsMapping;
-    }
-    /**
-     * @param {?} url
-     * @return {?}
-     */
-    cmsRouteExist(url) {
-        /** @type {?} */
-        const isCmsDrivenRoute = url.startsWith('/');
-        if (!isCmsDrivenRoute) {
-            return false;
-        }
-        /** @type {?} */
-        const routePath = url.substr(1);
-        return (isCmsDrivenRoute &&
-            !!this.router.config.find((route) => route.data && route.data.cxCmsRouteContext && route.path === routePath));
-    }
-    /**
-     * Contains Cms driven routing logic intended for use use in guards, especially in canActivate method.
-     *
-     * Will return true, when logic wont have to modify routing (so canActivate could be easily resolved to true)
-     * or will return false, when routing configuration was updated and redirection to newly generated route was initiated.
-     *
-     * @param {?} pageContext
-     * @param {?} componentTypes
-     * @param {?} currentUrl
-     * @return {?}
-     */
-    handleCmsRoutesInGuard(pageContext, componentTypes, currentUrl) {
-        /** @type {?} */
-        const componentRoutes = this.cmsMapping.getRoutesForComponents(componentTypes);
-        if (componentRoutes.length) {
-            if (this.updateRouting(pageContext, componentRoutes)) {
-                this.router.navigateByUrl(currentUrl);
-                return false;
-            }
-        }
-        return true;
-    }
-    /**
-     * @private
-     * @param {?} pageContext
-     * @param {?} routes
-     * @return {?}
-     */
-    updateRouting(pageContext, routes) {
-        if (pageContext.type === PageType.CONTENT_PAGE &&
-            pageContext.id.startsWith('/') &&
-            pageContext.id.length > 1) {
-            /** @type {?} */
-            const newRoute = {
-                path: pageContext.id.substr(1),
-                component: PageLayoutComponent,
-                children: routes,
-                data: {
-                    cxCmsRouteContext: pageContext,
-                },
-            };
-            this.router.resetConfig([newRoute, ...this.router.config]);
-            return true;
-        }
-        return false;
-    }
-}
-CmsRoutesService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-CmsRoutesService.ctorParameters = () => [
-    { type: Router },
-    { type: CmsMappingService }
-];
-/** @nocollapse */ CmsRoutesService.ngInjectableDef = defineInjectable({ factory: function CmsRoutesService_Factory() { return new CmsRoutesService(inject(Router), inject(CmsMappingService)); }, token: CmsRoutesService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CmsPageGuard {
-    /**
-     * @param {?} routingService
-     * @param {?} cmsService
-     * @param {?} cmsRoutes
-     * @param {?} cmsI18n
-     * @param {?} cmsGuards
-     */
-    constructor(routingService, cmsService, cmsRoutes, cmsI18n, cmsGuards) {
-        this.routingService = routingService;
-        this.cmsService = cmsService;
-        this.cmsRoutes = cmsRoutes;
-        this.cmsI18n = cmsI18n;
-        this.cmsGuards = cmsGuards;
-    }
-    /**
-     * @param {?} route
-     * @param {?} state
-     * @return {?}
-     */
-    canActivate(route, state) {
-        return this.routingService.getPageContext().pipe(switchMap(pageContext => this.cmsService.hasPage(pageContext).pipe(first(), withLatestFrom(of(pageContext)))), switchMap(([hasPage, pageContext]) => {
-            if (hasPage) {
-                return this.cmsService.getPageComponentTypes(pageContext).pipe(switchMap(componentTypes => this.cmsGuards
-                    .cmsPageCanActivate(componentTypes, route, state)
-                    .pipe(withLatestFrom(of(componentTypes)))), tap(([canActivate, componentTypes]) => {
-                    if (canActivate === true) {
-                        this.cmsI18n.loadNamespacesForComponents(componentTypes);
-                    }
-                }), map(([canActivate, componentTypes]) => {
-                    if (canActivate === true &&
-                        !route.data.cxCmsRouteContext &&
-                        !this.cmsRoutes.cmsRouteExist(pageContext.id)) {
-                        return this.cmsRoutes.handleCmsRoutesInGuard(pageContext, componentTypes, state.url);
-                    }
-                    return canActivate;
-                }));
-            }
-            else {
-                if (pageContext.id !== '/not-found') {
-                    this.routingService.go(['/not-found']);
-                }
-                return of(false);
-            }
-        }));
-    }
-}
-CmsPageGuard.guardName = 'CmsPageGuard';
-CmsPageGuard.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CmsPageGuard.ctorParameters = () => [
-    { type: RoutingService },
-    { type: CmsService },
-    { type: CmsRoutesService },
-    { type: CmsI18nService },
-    { type: CmsGuardsService }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const guards$1 = [CmsPageGuard];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class OutletStyleService {
-    constructor() {
-        this.templateRefs = {};
-    }
-    /**
-     * @param {?} outlet
-     * @param {?} elem
-     * @return {?}
-     */
-    add(outlet, elem) {
-        this.templateRefs[outlet] = elem;
-    }
-    /**
-     * @param {?} outlet
-     * @return {?}
-     */
-    get(outlet) {
-        return this.templateRefs[outlet];
-    }
-}
-OutletStyleService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ OutletStyleService.ngInjectableDef = defineInjectable({ factory: function OutletStyleService_Factory() { return new OutletStyleService(); }, token: OutletStyleService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {string} */
-const OutletPosition = {
-    REPLACE: 'replace',
-    BEFORE: 'before',
-    AFTER: 'after',
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class OutletService {
-    constructor() {
-        this.templatesRefs = {};
-        this.templatesRefsBefore = {};
-        this.templatesRefsAfter = {};
-    }
-    /**
-     * @param {?} outlet
-     * @param {?} template
-     * @param {?=} position
-     * @return {?}
-     */
-    add(outlet, template, position = OutletPosition.REPLACE) {
-        if (position === OutletPosition.BEFORE) {
-            this.templatesRefsBefore[outlet] = template;
-        }
-        if (position === OutletPosition.REPLACE) {
-            this.templatesRefs[outlet] = template;
-        }
-        if (position === OutletPosition.AFTER) {
-            this.templatesRefsAfter[outlet] = template;
-        }
-    }
-    /**
-     * @param {?} outlet
-     * @param {?=} position
-     * @return {?}
-     */
-    get(outlet, position = OutletPosition.REPLACE) {
-        /** @type {?} */
-        let templateRef;
-        switch (position) {
-            case OutletPosition.BEFORE:
-                templateRef = this.templatesRefsBefore[outlet];
-                break;
-            case OutletPosition.AFTER:
-                templateRef = this.templatesRefsAfter[outlet];
-                break;
-            default:
-                templateRef = this.templatesRefs[outlet];
-        }
-        return templateRef;
-        // return this.templatesRefs[outlet] ? this.templatesRefs[outlet] : null;
-    }
-}
-OutletService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ OutletService.ngInjectableDef = defineInjectable({ factory: function OutletService_Factory() { return new OutletService(); }, token: OutletService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class OutletDirective {
-    /**
-     * @param {?} vcr
-     * @param {?} templateRef
-     * @param {?} outletService
-     * @param {?} outletStyleService
-     * @param {?} renderer
-     */
-    constructor(vcr, templateRef, outletService, outletStyleService, renderer) {
-        this.vcr = vcr;
-        this.templateRef = templateRef;
-        this.outletService = outletService;
-        this.outletStyleService = outletStyleService;
-        this.renderer = renderer;
-    }
-    /**
-     * @param {?} value
-     * @return {?}
-     */
-    set cxOutletContext(value) {
-        this._context = value;
-    }
-    /**
-     * @return {?}
-     */
-    ngOnInit() {
-        /** @type {?} */
-        const nodes = [];
-        nodes.push(...this.renderTemplate(OutletPosition.BEFORE));
-        nodes.push(...this.renderTemplate(OutletPosition.REPLACE, true));
-        nodes.push(...this.renderTemplate(OutletPosition.AFTER));
-        this.renderStyleLink(nodes);
-    }
-    /**
-     * @private
-     * @param {?} position
-     * @param {?=} replace
-     * @return {?}
-     */
-    renderTemplate(position, replace = false) {
-        /** @type {?} */
-        const nodes = [];
-        /** @type {?} */
-        const template = this.outletService.get(this.cxOutlet, position);
-        if (template || replace) {
-            /** @type {?} */
-            const ref = this.vcr.createEmbeddedView(template || this.templateRef, {
-                $implicit: this.context,
-            });
-            nodes.push(...ref.rootNodes);
-        }
-        return nodes;
-    }
-    /**
-     * @private
-     * @param {?} nodes
-     * @return {?}
-     */
-    renderStyleLink(nodes) {
-        /** @type {?} */
-        const styleElement = this.outletStyleService.get(this.cxOutlet);
-        if (styleElement) {
-            /** @type {?} */
-            let parentElement = nodes.find(node => node instanceof HTMLElement);
-            if (parentElement.shadowRoot) {
-                parentElement = parentElement.shadowRoot;
-            }
-            styleElement.nativeElement.rel = 'stylesheet';
-            this.renderer.appendChild(parentElement, styleElement.nativeElement);
-        }
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    get context() {
-        // return specific context if provided
-        if (this._context) {
-            return this._context;
-        }
-        /** @type {?} */
-        const ctx = ((/** @type {?} */ (this.vcr.injector))).view.context;
-        // the context might already be given $implicit
-        // by a parent *ngIf or *ngFor
-        return ctx.$implicit || ctx;
-    }
-}
-OutletDirective.decorators = [
-    { type: Directive, args: [{
-                selector: '[cxOutlet]',
-            },] }
-];
-/** @nocollapse */
-OutletDirective.ctorParameters = () => [
-    { type: ViewContainerRef },
-    { type: TemplateRef },
-    { type: OutletService },
-    { type: OutletStyleService },
-    { type: Renderer2 }
-];
-OutletDirective.propDecorators = {
-    cxOutlet: [{ type: Input }],
-    cxOutletContext: [{ type: Input }]
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class OutletModule {
-}
-OutletModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule],
-                declarations: [OutletDirective],
-                providers: [OutletService],
-                exports: [OutletDirective],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CmsModule$1 {
-}
-CmsModule$1.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    ConfigModule.withConfig(defaultCmsModuleConfig),
-                    OutletModule,
-                    CmsModule,
-                ],
-                providers: [...guards$1, { provide: CmsConfig, useExisting: Config }],
-                declarations: [],
-                exports: [OutletDirective],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class PageSlotComponent {
-    /**
-     * @param {?} cmsService
-     * @param {?} dynamicAttributeService
-     * @param {?} renderer
-     * @param {?} hostElement
-     * @param {?} cmsMapping
-     */
-    constructor(cmsService, dynamicAttributeService, renderer, hostElement, cmsMapping) {
-        this.cmsService = cmsService;
-        this.dynamicAttributeService = dynamicAttributeService;
-        this.renderer = renderer;
-        this.hostElement = hostElement;
-        this.cmsMapping = cmsMapping;
-    }
-    /**
-     * @return {?}
-     */
-    ngOnInit() {
-        // add the position name as a css class so that
-        // layout can be applied to it, using the position based class.
-        this.renderer.addClass(this.hostElement.nativeElement, this.position);
-    }
-    /**
-     * returns an observable with `ContentSlotData` for the current position
-     * @return {?}
-     */
-    get slot$() {
-        return this.cmsService
-            .getContentSlot(this.position)
-            .pipe(tap(slot => this.addSmartEditSlotClass(slot)));
-    }
-    /**
-     * returns an observable with components (`ContentSlotComponentData[]`)
-     * for the current slot
-     * @return {?}
-     */
-    get components$() {
-        return this.slot$.pipe(map(slot => (slot && slot.components ? slot.components : [])), tap(components => this.addComponentClass(components)));
-    }
-    // add a class to indicate whether the class is empty or not
-    /**
-     * @private
-     * @param {?} components
-     * @return {?}
-     */
-    addComponentClass(components) {
-        if (components && components.length > 0) {
-            this.renderer.addClass(this.hostElement.nativeElement, 'has-components');
-        }
-    }
-    /**
-     * @private
-     * @param {?} slot
-     * @return {?}
-     */
-    addSmartEditSlotClass(slot) {
-        if (this.cmsService.isLaunchInSmartEdit()) {
-            this.addSmartEditContract(slot);
-        }
-    }
-    /**
-     * @private
-     * @param {?} slot
-     * @return {?}
-     */
-    addSmartEditContract(slot) {
-        this.dynamicAttributeService.addDynamicAttributes(slot.properties, this.hostElement.nativeElement, this.renderer);
-    }
-}
-PageSlotComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'cx-page-slot',
-                template: "<ng-container *cxOutlet=\"position\">\n  <ng-container *ngFor=\"let component of (components$ | async)\">\n    <ng-container\n      *cxOutlet=\"component.flexType\"\n      [cxComponentWrapper]=\"component\"\n    >\n    </ng-container>\n  </ng-container>\n</ng-container>\n",
-                changeDetection: ChangeDetectionStrategy.OnPush
-            }] }
-];
-/** @nocollapse */
-PageSlotComponent.ctorParameters = () => [
-    { type: CmsService },
-    { type: DynamicAttributeService },
-    { type: Renderer2 },
-    { type: ElementRef },
-    { type: CmsMappingService }
-];
-PageSlotComponent.propDecorators = {
-    position: [{ type: Input }]
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- * @template T
- */
-class CmsComponentData {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ComponentWrapperDirective {
-    /**
-     * @param {?} vcr
-     * @param {?} componentMapper
-     * @param {?} injector
-     * @param {?} cmsService
-     * @param {?} dynamicAttributeService
-     * @param {?} renderer
-     * @param {?} cd
-     * @param {?} config
-     * @param {?} platformId
-     */
-    constructor(vcr, componentMapper, injector, cmsService, dynamicAttributeService, renderer, cd, config, platformId) {
-        this.vcr = vcr;
-        this.componentMapper = componentMapper;
-        this.injector = injector;
-        this.cmsService = cmsService;
-        this.dynamicAttributeService = dynamicAttributeService;
-        this.renderer = renderer;
-        this.cd = cd;
-        this.config = config;
-        this.platformId = platformId;
-    }
-    /**
-     * @return {?}
-     */
-    ngOnInit() {
-        if (!this.shouldRenderComponent()) {
-            return;
-        }
-        if (this.componentMapper.isWebComponent(this.cxComponentWrapper.flexType)) {
-            this.launchWebComponent();
-        }
-        else {
-            this.launchComponent();
-        }
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    shouldRenderComponent() {
-        /** @type {?} */
-        const isSSR = isPlatformServer(this.platformId);
-        /** @type {?} */
-        const isComponentDisabledInSSR = (this.config.cmsComponents[this.cxComponentWrapper.flexType] || {}).disableSSR;
-        return !(isSSR && isComponentDisabledInSSR);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    launchComponent() {
-        /** @type {?} */
-        const factory = this.componentMapper.getComponentFactoryByCode(this.cxComponentWrapper.flexType);
-        if (factory) {
-            this.cmpRef = this.vcr.createComponent(factory, undefined, this.getInjectorForComponent());
-            this.cd.detectChanges();
-            if (this.cmsService.isLaunchInSmartEdit()) {
-                this.addSmartEditContract(this.cmpRef.location.nativeElement);
-            }
-        }
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    launchWebComponent() {
-        return __awaiter(this, void 0, void 0, function* () {
-            /** @type {?} */
-            const elementName = yield this.componentMapper.initWebComponent(this.cxComponentWrapper.flexType, this.renderer);
-            if (elementName) {
-                this.webElement = this.renderer.createElement(elementName);
-                this.webElement.cxApi = Object.assign({}, this.injector.get(CxApiService), { CmsComponentData: this.getCmsDataForComponent() });
-                this.renderer.appendChild(this.vcr.element.nativeElement.parentElement, this.webElement);
-            }
-        });
-    }
-    /**
-     * @private
-     * @template T
-     * @return {?}
-     */
-    getCmsDataForComponent() {
-        return {
-            uid: this.cxComponentWrapper.uid,
-            data$: this.cmsService.getComponentData(this.cxComponentWrapper.uid),
-        };
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    getInjectorForComponent() {
-        /** @type {?} */
-        const configProviders = (this.config.cmsComponents[this.cxComponentWrapper.flexType] || {})
-            .providers || [];
-        return Injector.create({
-            providers: [
-                {
-                    provide: CmsComponentData,
-                    useValue: this.getCmsDataForComponent(),
-                },
-                ...configProviders,
-            ],
-            parent: this.injector,
-        });
-    }
-    /**
-     * @private
-     * @param {?} element
-     * @return {?}
-     */
-    addSmartEditContract(element) {
-        this.dynamicAttributeService.addDynamicAttributes(this.cxComponentWrapper.properties, element, this.renderer);
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        if (this.cmpRef) {
-            this.cmpRef.destroy();
-        }
-        if (this.webElement) {
-            this.renderer.removeChild(this.vcr.element.nativeElement.parentElement, this.webElement);
-        }
-    }
-}
-ComponentWrapperDirective.decorators = [
-    { type: Directive, args: [{
-                selector: '[cxComponentWrapper]',
-            },] }
-];
-/** @nocollapse */
-ComponentWrapperDirective.ctorParameters = () => [
-    { type: ViewContainerRef },
-    { type: ComponentMapperService },
-    { type: Injector },
-    { type: CmsService },
-    { type: DynamicAttributeService },
-    { type: Renderer2 },
-    { type: ChangeDetectorRef },
-    { type: CmsConfig },
-    { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
-];
-ComponentWrapperDirective.propDecorators = {
-    cxComponentWrapper: [{ type: Input }]
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class PageComponentModule {
-}
-PageComponentModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule],
-                providers: [],
-                declarations: [ComponentWrapperDirective],
-                exports: [ComponentWrapperDirective],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class PageSlotModule {
-}
-PageSlotModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule, OutletModule, PageComponentModule],
-                providers: [],
-                declarations: [PageSlotComponent],
-                exports: [PageSlotComponent],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class PageLayoutModule {
-}
-PageLayoutModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule, CmsModule$1, PageSlotModule],
-                declarations: [PageLayoutComponent],
-                providers: [PageLayoutService],
-                exports: [PageLayoutComponent],
             },] }
 ];
 
@@ -6723,7 +7252,9 @@ class BannerComponentService {
     constructor(component, config) {
         this.component = component;
         this.config = config;
-        this.convertToAbsoluteUrl = map(url => this.getBaseUrl() + url);
+        this.convertToAbsoluteUrl = map((url) => {
+            return url.startsWith('http') ? url : this.getBaseUrl() + url;
+        });
         // TODO: move to a more generic location
         // TODO: Make configurable
         this.formats = [
@@ -7732,7 +8263,7 @@ class SearchBoxComponentService {
             displaySuggestions: true,
             maxSuggestions: 5,
             minCharactersBeforeRequest: 3,
-            displayProducts: false,
+            displayProducts: true,
         };
         this.config$ = of(this.defaultConfig);
         this.queryParam$ = this.routingService
@@ -8132,6 +8663,8 @@ CmsLibModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     CommonModule,
+                    SkipLinkModule,
+                    HamburgerMenuModule,
                     CmsParagraphModule,
                     LinkModule,
                     BannerModule,
@@ -9321,6 +9854,11 @@ StoreFinderModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class StyleRefDirective {
     /**
      * @param {?} element
@@ -9378,6 +9916,29 @@ const defaultLayoutConfig = {
         lg: 1200,
     },
     layoutSlots: {
+        header: {
+            md: {
+                slots: [
+                    'PreHeader',
+                    'SiteContext',
+                    'SiteLinks',
+                    'SiteLogo',
+                    'SearchBox',
+                    'SiteLogin',
+                    'MiniCart',
+                    'NavigationBar',
+                ],
+            },
+            xs: {
+                slots: ['PreHeader', 'SiteLogo', 'SearchBox', 'MiniCart'],
+            },
+        },
+        navigation: {
+            md: { slots: [] },
+            xs: {
+                slots: ['SiteLogin', 'NavigationBar', 'SiteContext', 'SiteLinks'],
+            },
+        },
         footer: {
             slots: ['Footer'],
         },
@@ -9445,54 +10006,75 @@ const defaultLayoutConfig = {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class LoginComponentService {
+    constructor() {
+        this._isLogin = false;
+    }
+    /**
+     * @return {?}
+     */
+    get isLogin() {
+        return this._isLogin;
+    }
+    /**
+     * @param {?} login
+     * @return {?}
+     */
+    set isLogin(login) {
+        this._isLogin = login;
+    }
+}
+LoginComponentService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ LoginComponentService.ngInjectableDef = defineInjectable({ factory: function LoginComponentService_Factory() { return new LoginComponentService(); }, token: LoginComponentService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class LoginComponent {
     /**
      * @param {?} auth
      * @param {?} userService
+     * @param {?} loginService
      */
-    constructor(auth, userService) {
+    constructor(auth, userService, loginService) {
         this.auth = auth;
         this.userService = userService;
-        this.isLogin = false;
+        this.loginService = loginService;
     }
     /**
      * @return {?}
      */
-    ngOnInit() {
-        this.user$ = this.userService.get();
-        this.subscription = this.auth
-            .getUserToken()
-            .subscribe((token) => {
-            if (token && token.access_token && !this.isLogin) {
-                this.isLogin = true;
+    get user$() {
+        return this.auth.getUserToken().pipe(map(token => {
+            if (token && !!token.access_token && !this.loginService.isLogin) {
+                this.loginService.isLogin = true;
                 this.userService.load(token.userId);
                 this.auth.login();
             }
-            else if (token && !token.access_token && this.isLogin) {
-                this.isLogin = false;
+            else if (token && !token.access_token && this.loginService.isLogin) {
+                this.loginService.isLogin = false;
             }
-        });
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
+            return token;
+        }), filter(token => token && !!token.access_token), switchMap(() => this.userService.get()));
     }
 }
 LoginComponent.decorators = [
     { type: Component, args: [{
                 selector: 'cx-login',
-                template: "<ng-container *ngIf=\"(user$ | async) as user\">\n  <ng-container *ngIf=\"user?.name\">\n    <div class=\"cx-login-greet\">\n      {{ 'common.label.userGreeting' | cxTranslate: { name: user.name } }}\n    </div>\n    <cx-page-slot position=\"HeaderLinks\"></cx-page-slot>\n  </ng-container>\n\n  <ng-container *ngIf=\"!user?.name\">\n    <a role=\"link\" [routerLink]=\"{ route: ['login'] } | cxTranslateUrl\">{{\n      'common.action.signInRegister' | cxTranslate\n    }}</a>\n  </ng-container>\n</ng-container>\n",
+                template: "<ng-container *ngIf=\"(user$ | async) as user; else login\">\n  <div class=\"cx-login-greet\">\n    {{ 'common.label.userGreeting' | cxTranslate: { name: user.name } }}\n  </div>\n  <cx-page-slot position=\"HeaderLinks\"></cx-page-slot>\n</ng-container>\n\n<ng-template #login>\n  <a role=\"link\" [routerLink]=\"{ route: ['login'] } | cxTranslateUrl\">{{\n    'common.action.signInRegister' | cxTranslate\n  }}</a>\n</ng-template>\n",
                 styles: ["/*!\n  SPARTA v0.1\n  This file is for theme configuration. These variables are used in global and component CSS files.\n\n  You can:\n    1) Set new values for Bootstrap variables - https://github.com/twbs/bootstrap/blob/v4-dev/scss/_variables.scss\n    2) Set new values for cxbase variables - cxbase/_variables.scss\n    3) Set new values for component variables - app/__/_.scss\n  You cannot:\n    1) Add new variables\n*//*!\n  CXBASE VARIABLES\n  This is NOT a theme.\n\n  This file should include ONLY new variables that Bootstrap does not provide.\n  For example, Bootstrap does not have a variable for semi font weight.\n\n  Same case for directionality.\n\n  Also be aware of items that should be configurable.\n  The Sparta buttons use uppercase type but future themes may want normal case\n  so a variable was created to make this available for other themes.\n\n*/.cx-login-greet{margin:var(--cx-margin,0);color:var(--cx-color,var(--cx-g-color-inverse));font-size:var(--cx-font-size,.875rem);font-weight:var(--cx-g-font-weight-normal);line-height:var(--cx-line-height,1.22222);font-weight:var(--cx-font-weight,var(--cx-g-font-weight-semi));padding:var(--cx-padding,0)}@media (max-width:991.98px){.cx-login-greet{color:var(--cx-color,var(--cx-g-color-text));padding:var(--cx-padding,.5rem 1rem 0);font-size:var(--cx-font-size,1rem);font-weight:var(--cx-g-font-weight-normal);line-height:var(--cx-line-height,1.6)}}"]
             }] }
 ];
 /** @nocollapse */
 LoginComponent.ctorParameters = () => [
     { type: AuthService },
-    { type: UserService }
+    { type: UserService },
+    { type: LoginComponentService }
 ];
 
 /**
@@ -9506,378 +10088,23 @@ LoginModule.decorators = [
                 imports: [
                     CommonModule,
                     RouterModule,
-                    CmsModule$1,
-                    BootstrapModule,
                     UserModule,
                     UrlTranslationModule,
                     PageSlotModule,
+                    ConfigModule.withConfig((/** @type {?} */ ({
+                        cmsComponents: {
+                            LoginComponent: {
+                                selector: 'cx-login',
+                            },
+                        },
+                    }))),
                     I18nModule,
                 ],
                 declarations: [LoginComponent],
+                entryComponents: [LoginComponent],
                 exports: [LoginComponent],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class HeaderComponent {
-    /**
-     * @param {?} router
-     */
-    constructor(router) {
-        this.router = router;
-        this.showMenu = false;
-    }
-    /**
-     * @return {?}
-     */
-    toggleMenu() {
-        this.showMenu = !this.showMenu;
-        if (this.showMenu) {
-            this.subscription = this.router.events.subscribe(() => {
-                this.toggleMenu();
-            });
-        }
-        else {
-            this.subscription.unsubscribe();
-        }
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
-    }
-}
-HeaderComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'cx-header',
-                template: "<header class=\"cx-header\">\n  <button\n    class=\"cx-hamburger\"\n    type=\"button\"\n    (click)=\"toggleMenu()\"\n    [class.is-active]=\"showMenu\"\n    [attr.aria-expanded]=\"showMenu\"\n    aria-label=\"Menu\"\n    aria-controls=\"header-account-container, header-categories-container, header-locale-container\"\n  >\n    <span class=\"hamburger-box\"> <span class=\"hamburger-inner\"></span> </span>\n  </button>\n  <cx-header-skipper></cx-header-skipper>\n\n  <cx-page-slot position=\"SiteContext\"></cx-page-slot>\n  <cx-page-slot position=\"SiteLinks\"></cx-page-slot>\n  <cx-page-slot position=\"SiteLogo\"></cx-page-slot>\n  <cx-page-slot position=\"SearchBox\"></cx-page-slot>\n  <cx-login class=\"SiteLogin\"></cx-login>\n  <cx-page-slot position=\"MiniCart\"></cx-page-slot>\n  <cx-page-slot position=\"NavigationBar\"></cx-page-slot>\n</header>\n",
-                styles: ["/*!\n  SPARTA v0.1\n  This file is for theme configuration. These variables are used in global and component CSS files.\n\n  You can:\n    1) Set new values for Bootstrap variables - https://github.com/twbs/bootstrap/blob/v4-dev/scss/_variables.scss\n    2) Set new values for cxbase variables - cxbase/_variables.scss\n    3) Set new values for component variables - app/__/_.scss\n  You cannot:\n    1) Add new variables\n*//*!\n  CXBASE VARIABLES\n  This is NOT a theme.\n\n  This file should include ONLY new variables that Bootstrap does not provide.\n  For example, Bootstrap does not have a variable for semi font weight.\n\n  Same case for directionality.\n\n  Also be aware of items that should be configurable.\n  The Sparta buttons use uppercase type but future themes may want normal case\n  so a variable was created to make this available for other themes.\n\n*/:host{background-color:var(--cx-background-color,var(--cx-g-color-dark));color:var(--cx-color,var(--cx-g-color-inverse));display:block}header{max-width:var(--cx-max-width,1140px);margin:auto;display:flex;flex-wrap:wrap}header>*{-ms-grid-row-align:center;align-self:center}.SiteContext,.SiteLinks{font-size:var(--cx-g-font-small,.75rem);color:var(--cx-color,var(--cx-g-color-light))}.SiteLinks{--cx-display:block}.SiteLogo{--cx-width:95px}.SearchBox{margin:.5rem auto}.NavigationBar{flex:100%}.cx-hamburger{display:block}@media (max-width:575.98px){.SearchBox{margin:0 0 0 auto}}@media (max-width:991.98px){.NavigationBar,.SiteContext,.SiteLinks,.SiteLogin{flex:100%}.NavigationBar,.SiteLogin{order:1}.SiteContext,.SiteLinks{order:2}.SiteContext,.SiteLinks,.SiteLogin{background-color:var(--cx-background-color,var(--cx-g-color-background));color:var(--cx-color,var(--cx-g-color-text));padding:var(--cx-padding,.25rem 0)}.SiteContext{padding:.5rem 1rem .25rem}.SiteLinks{padding:.25rem 1rem .5rem}:host:not(.mobile-nav) .NavigationBar,:host:not(.mobile-nav) .SiteContext,:host:not(.mobile-nav) .SiteLinks,:host:not(.mobile-nav) .SiteLogin{display:none}}@media (min-width:992px){header{padding:0 1rem}.cx-hamburger{display:none}.SiteContext,.SiteLinks{flex:50%;display:flex;--cx-margin:0.5rem 8px}.SiteContext.has-components:before,.SiteLinks.has-components:before{border-top:var(--cx-border-top,1px solid currentColor);content:'';position:absolute;right:0;left:0;margin-top:30px}.SiteLinks{justify-content:flex-end;--cx-padding:0 0.5rem}.SiteLogin{padding:.5rem 1rem}}"]
-            }] }
-];
-/** @nocollapse */
-HeaderComponent.ctorParameters = () => [
-    { type: Router }
-];
-HeaderComponent.propDecorators = {
-    showMenu: [{ type: HostBinding, args: ['class.mobile-nav',] }]
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class HeaderSkipperComponent {
-    constructor() { }
-    /**
-     * @return {?}
-     */
-    ngOnInit() { }
-}
-HeaderSkipperComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'cx-header-skipper',
-                template: "<div class=\"cx-header-skipper\">\n  <a class=\"sr-only sr-only-focusable\" href=\"#header-categories-container\">{{\n    'common.action.skipToNavigation' | cxTranslate\n  }}</a>\n  <a class=\"sr-only sr-only-focusable\" href=\"#mini-cart\">{{\n    'common.action.skipToShoppingCart' | cxTranslate\n  }}</a>\n  <a class=\"sr-only sr-only-focusable\" href=\"#main-content\">{{\n    'common.action.skipToMainContent' | cxTranslate\n  }}</a>\n  <a class=\"sr-only sr-only-focusable\" href=\"#footer\">{{\n    'common.action.skipToFooter' | cxTranslate\n  }}</a>\n</div>\n",
-                styles: ["/*!\n  SPARTA v0.1\n  This file is for theme configuration. These variables are used in global and component CSS files.\n\n  You can:\n    1) Set new values for Bootstrap variables - https://github.com/twbs/bootstrap/blob/v4-dev/scss/_variables.scss\n    2) Set new values for cxbase variables - cxbase/_variables.scss\n    3) Set new values for component variables - app/__/_.scss\n  You cannot:\n    1) Add new variables\n*//*!\n  CXBASE VARIABLES\n  This is NOT a theme.\n\n  This file should include ONLY new variables that Bootstrap does not provide.\n  For example, Bootstrap does not have a variable for semi font weight.\n\n  Same case for directionality.\n\n  Also be aware of items that should be configurable.\n  The Sparta buttons use uppercase type but future themes may want normal case\n  so a variable was created to make this available for other themes.\n\n*/.cx-header-skipper{position:absolute;top:0;left:0}"]
-            }] }
-];
-/** @nocollapse */
-HeaderSkipperComponent.ctorParameters = () => [];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class HeaderModule {
-}
-HeaderModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                    CmsModule$1,
-                    LoginModule,
-                    RouterModule,
-                    PwaModule,
-                    UrlTranslationModule,
-                    PageSlotModule,
-                    I18nModule,
-                ],
-                declarations: [HeaderComponent, HeaderSkipperComponent],
-                exports: [HeaderComponent],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class UiFrameworkModule {
-}
-UiFrameworkModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule, BrowserAnimationsModule],
-                declarations: [],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class StorefrontComponent {
-    constructor() { }
-}
-StorefrontComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'cx-storefront',
-                template: "<cx-header></cx-header>\n\n<cx-page-slot position=\"BottomHeaderSlot\"></cx-page-slot>\n\n<cx-global-message></cx-global-message>\n\n<router-outlet></router-outlet>\n\n<footer>\n  <cx-page-layout section=\"footer\"></cx-page-layout>\n</footer>\n",
-                styles: [""]
-            }] }
-];
-/** @nocollapse */
-StorefrontComponent.ctorParameters = () => [];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const cartComponents = {
-    emptyCartText: {
-        flexType: 'CMSParagraphComponent',
-        typeCode: 'CMSParagraphComponent',
-        content: `
-      <h2>Your shopping cart is empty</h2>
-      <p>Suggestions</p>
-      <ul>
-          <li>
-          Browse our products by selecting a category above
-          </li>
-      </ul>`,
-    },
-};
-/** @type {?} */
-const defaultCartPageConfig = {
-    ignoreBackend: false,
-    pageId: 'cartPage',
-    type: 'ContentPage',
-    template: 'CartPageTemplate',
-    title: 'Cart',
-    slots: {
-        EmptyCartMiddleContent: {
-            componentIds: ['emptyCartText'],
-        },
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const headerComponents = {
-    LanguageComponent: {
-        typeCode: 'CMSSiteContextComponent',
-        flexType: 'CMSSiteContextComponent',
-        context: 'LANGUAGE',
-    },
-    CurrencyComponent: {
-        typeCode: 'CMSSiteContextComponent',
-        flexType: 'CMSSiteContextComponent',
-        context: 'CURRENCY',
-    },
-    storeFinder: {
-        typeCode: 'CMSLinkComponent',
-        flexType: 'CMSLinkComponent',
-        linkName: 'Find a Store',
-        url: '/store-finder',
-    },
-    breadcrumbComponent: {
-        typeCode: 'BreadcrumbComponent',
-        flexType: 'BreadcrumbComponent',
-    },
-};
-/** @type {?} */
-const defaultPageHeaderConfig = {
-    SiteContext: {
-        componentIds: ['LanguageComponent', 'CurrencyComponent'],
-    },
-    SiteLinks: {
-        componentIds: ['storeFinder'],
-    },
-    BottomHeaderSlot: {
-        componentIds: ['breadcrumbComponent'],
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function defaultCmsContentConfig() {
-    return {
-        cmsStructure: {
-            components: Object.assign({}, headerComponents, cartComponents),
-            slots: Object.assign({}, defaultPageHeaderConfig),
-            pages: [defaultCartPageConfig],
-        },
-    };
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class SeoMetaService {
-    /**
-     * @param {?} ngTitle
-     * @param {?} ngMeta
-     * @param {?} pageMetaService
-     */
-    constructor(ngTitle, ngMeta, pageMetaService) {
-        this.ngTitle = ngTitle;
-        this.ngMeta = ngMeta;
-        this.pageMetaService = pageMetaService;
-    }
-    /**
-     * @return {?}
-     */
-    init() {
-        this.pageMetaService
-            .getMeta()
-            .pipe(filter(Boolean))
-            .subscribe((meta) => (this.meta = meta));
-    }
-    /**
-     * @protected
-     * @param {?} meta
-     * @return {?}
-     */
-    set meta(meta) {
-        this.title = meta.title;
-        this.description = meta.description;
-        this.image = meta.image;
-        this.robots = meta.robots || [PageRobotsMeta.INDEX, PageRobotsMeta.FOLLOW];
-    }
-    /**
-     * @protected
-     * @param {?} title
-     * @return {?}
-     */
-    set title(title) {
-        this.ngTitle.setTitle(title || '');
-    }
-    /**
-     * @protected
-     * @param {?} value
-     * @return {?}
-     */
-    set description(value) {
-        this.addTag({ name: 'description', content: value });
-    }
-    /**
-     * @protected
-     * @param {?} imageUrl
-     * @return {?}
-     */
-    set image(imageUrl) {
-        if (imageUrl) {
-            this.addTag({ name: 'og:image', content: imageUrl });
-        }
-    }
-    /**
-     * @protected
-     * @param {?} value
-     * @return {?}
-     */
-    set robots(value) {
-        if (value) {
-            this.addTag({ name: 'robots', content: value.join(', ') });
-        }
-    }
-    /**
-     * @protected
-     * @param {?} meta
-     * @return {?}
-     */
-    addTag(meta) {
-        if (meta.content) {
-            this.ngMeta.updateTag(meta);
-        }
-    }
-}
-SeoMetaService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-SeoMetaService.ctorParameters = () => [
-    { type: Title },
-    { type: Meta },
-    { type: PageMetaService }
-];
-/** @nocollapse */ SeoMetaService.ngInjectableDef = defineInjectable({ factory: function SeoMetaService_Factory() { return new SeoMetaService(inject(Title), inject(Meta), inject(PageMetaService)); }, token: SeoMetaService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} injector
- * @return {?}
- */
-function initSeoService(injector) {
-    /** @type {?} */
-    const result = () => {
-        /** @type {?} */
-        const service = injector.get(SeoMetaService);
-        service.init();
-    };
-    return result;
-}
-class SeoModule {
-}
-SeoModule.decorators = [
-    { type: NgModule, args: [{
-                providers: [
-                    {
-                        provide: APP_INITIALIZER,
-                        useFactory: initSeoService,
-                        deps: [Injector],
-                        multi: true,
-                    },
-                ],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -10356,6 +10583,55 @@ UserComponentModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class UiFrameworkModule {
+}
+UiFrameworkModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, BrowserAnimationsModule],
+                declarations: [],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class StorefrontComponent {
+    /**
+     * @param {?} hamburgerMenuService
+     */
+    constructor(hamburgerMenuService) {
+        this.hamburgerMenuService = hamburgerMenuService;
+    }
+    /**
+     * @return {?}
+     */
+    get isExpanded() {
+        return this.hamburgerMenuService.isExpanded;
+    }
+    /**
+     * @return {?}
+     */
+    collapseMenu() {
+        this.hamburgerMenuService.toggle(true);
+    }
+}
+StorefrontComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'cx-storefront',
+                template: "<header\n  [class.is-expanded]=\"isExpanded | async\"\n  (keydown.escape)=\"collapseMenu()\"\n>\n  <cx-page-layout section=\"header\"></cx-page-layout>\n  <cx-page-layout section=\"navigation\"></cx-page-layout>\n</header>\n\n<cx-page-slot position=\"BottomHeaderSlot\"></cx-page-slot>\n\n<cx-global-message></cx-global-message>\n\n<router-outlet></router-outlet>\n\n<footer>\n  <cx-page-layout section=\"footer\"></cx-page-layout>\n</footer>\n",
+                styles: [""]
+            }] }
+];
+/** @nocollapse */
+StorefrontComponent.ctorParameters = () => [
+    { type: HamburgerMenuService }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class MainModule {
 }
 MainModule.decorators = [
@@ -10366,8 +10642,6 @@ MainModule.decorators = [
                     GlobalMessageComponentModule,
                     UserComponentModule,
                     CmsModule$1,
-                    LoginModule,
-                    HeaderModule,
                     UiFrameworkModule,
                     OutletRefModule,
                     PwaModule,
@@ -10402,80 +10676,6 @@ LayoutModule.decorators = [
                 exports: [MainModule, ...layoutModules],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class LogoutGuard {
-    /**
-     * @param {?} auth
-     * @param {?} cms
-     */
-    constructor(auth, cms) {
-        this.auth = auth;
-        this.cms = cms;
-    }
-    /**
-     * @return {?}
-     */
-    canActivate() {
-        this.logout();
-        return this.cms.hasPage({
-            id: '/logout',
-            type: PageType.CONTENT_PAGE,
-        });
-    }
-    /**
-     * @protected
-     * @return {?}
-     */
-    logout() {
-        this.auth.logout();
-    }
-}
-LogoutGuard.GUARD_NAME = 'LogoutGuard';
-LogoutGuard.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-LogoutGuard.ctorParameters = () => [
-    { type: AuthService },
-    { type: CmsService }
-];
-/** @nocollapse */ LogoutGuard.ngInjectableDef = defineInjectable({ factory: function LogoutGuard_Factory() { return new LogoutGuard(inject(AuthService), inject(CmsService)); }, token: LogoutGuard, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class LogoutModule {
-}
-LogoutModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    RouterModule.forChild([
-                        {
-                            path: 'logout',
-                            canActivate: [LogoutGuard],
-                            component: PageLayoutComponent,
-                        },
-                    ]),
-                ],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -10896,11 +11096,6 @@ UiModule.decorators = [
                 exports: [LayoutModule, PagesModule],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -11592,6 +11787,6 @@ const translations = {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { CartComponentModule, CartDetailsModule, AddToCartModule, CartItemComponent, CartDetailsComponent, CartTotalsComponent, OrderSummaryComponent, AddToCartComponent, CheckoutComponentModule, MultiStepCheckoutModule, ShippingAddressModule, OrderConfirmationModule, SuggestedAddressDialogComponent, AddressFormComponent, PaymentFormComponent, ReviewSubmitComponent, DeliveryModeComponent, MultiStepCheckoutComponent, OrderConfirmationComponent, CmsModule$1 as CmsModule, CmsPageGuard, PageLayoutModule, PageLayoutComponent, CmsMappingService, CmsRoutesService, CmsLibModule, MiniCartComponent, FooterNavigationComponent, ParagraphComponent, ProductCarouselComponent, TabParagraphContainerComponent, NavigationComponent, CategoryNavigationComponent, ProductReferencesComponent, LinkComponent, BreadcrumbComponent, BannerComponent, ResponsiveBannerComponent, MiniCartModule, FooterNavigationModule, CmsParagraphModule, ProductCarouselModule, TabParagraphContainerModule, NavigationModule, CategoryNavigationModule, ProductReferencesModule, LinkModule, SearchBoxModule, SearchBoxComponent, SearchBoxComponentService, BreadcrumbModule, BannerModule, SiteContextSelectorModule, SiteContextComponentService, GlobalMessageComponentModule, GlobalMessageComponent, OrderModule, OrderDetailHeadlineComponent, OrderDetailItemsComponent, OrderDetailShippingComponent, OrderDetailTotalsComponent, OrderHistoryComponent, PaymentMethodsComponent, OccModule, ProductModule$1 as ProductModule, ProductDetailsModule, ProductListModule, ProductTabsModule, ProductSummaryComponent, ProductDetailsComponent, ProductImagesComponent, ProductListItemComponent, ProductGridItemComponent, ProductListComponent, ProductFacetNavigationComponent, ProductAttributesComponent, ProductReviewsComponent, ProductTabsComponent, ProductDetailOutlets, ProductTabsOutlets, StoreFinderModule, UiModule, UiFrameworkModule, ComponentsModule, MediaModule, FormComponentsModule, PaginationAndSortingModule, SpinnerComponent, PictureComponent, StarRatingComponent, ItemCounterComponent, GenericLinkComponent, PagesModule, ProductPageComponent, CartPageComponent, OrderConfirmationPageComponent, CartPageModule, ProductPageModule, LayoutModule, MainModule, BREAKPOINT, LayoutConfig, defaultLayoutConfig, BreakpointService, StorefrontComponent, HeaderComponent, UserComponentModule, LoginModule, LoginComponent, LoginFormModule, LoginFormComponent, RegisterComponent, pwaConfigurationFactory, pwaFactory, PwaModule, StorefrontModule, OutletModule, OutletService, OutletDirective, OutletRefModule, OutletRefDirective, translations, CmsComponentData, PageSlotModule, PageSlotComponent, PageComponentModule, ComponentWrapperDirective, defaultCmsContentConfig, SeoMetaService, initSeoService, SeoModule, LogoutGuard, LogoutModule, defaultCartPageConfig as ɵeg, BootstrapModule as ɵb, AddedToCartDialogComponent as ɵm, CartItemListComponent as ɵl, CartSharedModule as ɵa, CartTotalsModule as ɵn, DeliveryModeModule as ɵq, BillingAddressFormComponent as ɵu, BillingAddressFormModule as ɵt, PaymentFormModule as ɵs, PaymentMethodComponent as ɵv, PaymentMethodModule as ɵr, ReviewSubmitModule as ɵw, AddressFormModule as ɵo, ShippingAddressComponent as ɵp, PromotionsComponent as ɵk, PromotionsModule as ɵj, guards as ɵx, OrderConfirmationPageGuard as ɵy, AddressBookComponent as ɵbr, AddressBookComponentService as ɵbq, AddressBookModule as ɵbp, AddressCardComponent as ɵbs, BannerComponentService as ɵbk, NavigationUIComponent as ɵbm, NavigationComponentService as ɵbl, ProductCarouselService as ɵbn, SiteContextSelectorComponent as ɵbo, guards$1 as ɵbg, PageLayoutService as ɵbj, CmsGuardsService as ɵbi, CmsI18nService as ɵbh, OrderDetailsModule as ɵbx, OrderDetailsService as ɵby, OrderHistoryModule as ɵbt, PaymentMethodsModule as ɵbz, UpdatePasswordFormComponent as ɵcc, UpdatePasswordComponent as ɵcb, UpdatePasswordModule as ɵca, UpdateProfileFormComponent as ɵcf, UpdateProfileComponent as ɵce, UpdateProfileModule as ɵcd, OutletStyleService as ɵbf, StyleRefDirective as ɵdb, StyleRefModule as ɵda, ProductViewComponent as ɵbu, ProductReviewsModule as ɵbv, provideConfigFromMetaTags as ɵdg, AddToHomeScreenBannerComponent as ɵbe, AddToHomeScreenBtnComponent as ɵbc, AddToHomeScreenComponent as ɵbd, PWAModuleConfig as ɵz, defaultPWAModuleConfig as ɵba, AddToHomeScreenService as ɵbb, AbstractStoreItemComponent as ɵck, ScheduleComponent as ɵcp, StoreFinderGridComponent as ɵci, StoreFinderHeaderComponent as ɵcq, StoreFinderListItemComponent as ɵco, StoreFinderMapComponent as ɵcn, StoreFinderPaginationDetailsComponent as ɵcs, StoreFinderListComponent as ɵcm, StoreFinderSearchResultComponent as ɵcg, StoreFinderSearchComponent as ɵcl, StoreFinderStoreDescriptionComponent as ɵcj, StoreFinderStoresCountComponent as ɵch, StoreFinderComponent as ɵcr, CardComponent as ɵe, CardModule as ɵd, GenericLinkModule as ɵi, PaginationComponent as ɵf, SortingComponent as ɵg, SpinnerModule as ɵh, OnlyNumberDirective as ɵc, HeaderSkipperComponent as ɵcz, HeaderModule as ɵcy, HardcodedCheckoutComponent as ɵdf, CartNotEmptyGuard as ɵde, GuardsModule as ɵdd, OrderConfirmationPageModule as ɵdc, CurrentProductService as ɵbw, ForgotPasswordComponent as ɵcx, ForgotPasswordModule as ɵcw, RegisterComponentModule as ɵct, ResetPasswordFormComponent as ɵcv, ResetPasswordModule as ɵcu, addToCart as ɵdh, addressBook as ɵdj, address as ɵdi, cartItems as ɵdl, cart as ɵdk, checkoutAddress as ɵdn, checkoutOrderConfirmation as ɵdo, checkoutReview as ɵdp, checkoutShipping as ɵdq, checkout as ɵdm, common as ɵdr, forgottenPassword as ɵds, login as ɵdt, orderCost as ɵdu, orderDetails as ɵdv, orderHistory as ɵdw, orderReview as ɵdx, paymentMethods as ɵdz, payment as ɵdy, productDetails as ɵea, productList as ɵeb, productReview as ɵec, pwa as ɵed, register as ɵee, storeFinder as ɵef };
+export { LogoutGuard, LogoutModule, CmsComponentData, PageSlotModule, PageSlotComponent, PageComponentModule, ComponentWrapperDirective, defaultCmsContentConfig, SeoMetaService, initSeoService, SeoModule, HamburgerMenuComponent, HamburgerMenuModule, HamburgerMenuService, SkipLinkComponent, SkipLinkModule, CartComponentModule, CartDetailsModule, AddToCartModule, CartItemComponent, CartDetailsComponent, CartTotalsComponent, OrderSummaryComponent, AddToCartComponent, CheckoutComponentModule, MultiStepCheckoutModule, ShippingAddressModule, OrderConfirmationModule, SuggestedAddressDialogComponent, AddressFormComponent, PaymentFormComponent, ReviewSubmitComponent, DeliveryModeComponent, MultiStepCheckoutComponent, OrderConfirmationComponent, CmsLibModule, MiniCartComponent, FooterNavigationComponent, ParagraphComponent, ProductCarouselComponent, TabParagraphContainerComponent, NavigationComponent, CategoryNavigationComponent, ProductReferencesComponent, LinkComponent, BreadcrumbComponent, BannerComponent, ResponsiveBannerComponent, MiniCartModule, FooterNavigationModule, CmsParagraphModule, ProductCarouselModule, TabParagraphContainerModule, NavigationModule, CategoryNavigationModule, ProductReferencesModule, LinkModule, SearchBoxModule, SearchBoxComponent, SearchBoxComponentService, BreadcrumbModule, BannerModule, SiteContextSelectorModule, SiteContextComponentService, CmsModule$1 as CmsModule, CmsPageGuard, PageLayoutModule, PageLayoutComponent, CmsMappingService, CmsRoutesService, GlobalMessageComponentModule, GlobalMessageComponent, OrderModule, OrderDetailHeadlineComponent, OrderDetailItemsComponent, OrderDetailShippingComponent, OrderDetailTotalsComponent, OrderHistoryComponent, PaymentMethodsComponent, OccModule, OutletModule, OutletService, OutletDirective, OutletRefModule, OutletRefDirective, ProductModule$1 as ProductModule, ProductDetailsModule, ProductListModule, ProductTabsModule, ProductSummaryComponent, ProductDetailsComponent, ProductImagesComponent, ProductListItemComponent, ProductGridItemComponent, ProductListComponent, ProductFacetNavigationComponent, ProductAttributesComponent, ProductReviewsComponent, ProductTabsComponent, ProductDetailOutlets, ProductTabsOutlets, pwaConfigurationFactory, pwaFactory, PwaModule, StoreFinderModule, StorefrontModule, UiModule, UiFrameworkModule, ComponentsModule, MediaModule, FormComponentsModule, PaginationAndSortingModule, SpinnerComponent, PictureComponent, StarRatingComponent, ItemCounterComponent, GenericLinkComponent, PagesModule, ProductPageComponent, CartPageComponent, OrderConfirmationPageComponent, CartPageModule, ProductPageModule, BreakpointService, defaultLayoutConfig, BREAKPOINT, LayoutConfig, LayoutModule, MainModule, StorefrontComponent, UserComponentModule, LoginModule, LoginComponent, LoginFormModule, LoginFormComponent, RegisterComponent, translations, defaultCartPageConfig as ɵc, BootstrapModule as ɵe, AddedToCartDialogComponent as ɵp, CartItemListComponent as ɵo, CartSharedModule as ɵd, CartTotalsModule as ɵq, DeliveryModeModule as ɵt, BillingAddressFormComponent as ɵx, BillingAddressFormModule as ɵw, PaymentFormModule as ɵv, PaymentMethodComponent as ɵy, PaymentMethodModule as ɵu, ReviewSubmitModule as ɵz, AddressFormModule as ɵr, ShippingAddressComponent as ɵs, PromotionsComponent as ɵn, PromotionsModule as ɵm, guards$1 as ɵba, OrderConfirmationPageGuard as ɵbb, AddressBookComponent as ɵbp, AddressBookComponentService as ɵbo, AddressBookModule as ɵbn, AddressCardComponent as ɵbq, BannerComponentService as ɵbi, NavigationUIComponent as ɵbk, NavigationComponentService as ɵbj, ProductCarouselService as ɵbl, SiteContextSelectorComponent as ɵbm, guards as ɵbt, PageLayoutService as ɵa, CmsGuardsService as ɵbv, CmsI18nService as ɵbu, OrderDetailsModule as ɵby, OrderDetailsService as ɵbz, OrderHistoryModule as ɵbr, PaymentMethodsModule as ɵca, UpdatePasswordFormComponent as ɵcd, UpdatePasswordComponent as ɵcc, UpdatePasswordModule as ɵcb, UpdateProfileFormComponent as ɵcg, UpdateProfileComponent as ɵcf, UpdateProfileModule as ɵce, OutletStyleService as ɵb, StyleRefDirective as ɵdb, StyleRefModule as ɵda, ProductViewComponent as ɵbs, ProductReviewsModule as ɵbw, provideConfigFromMetaTags as ɵdg, AddToHomeScreenBannerComponent as ɵbh, AddToHomeScreenBtnComponent as ɵbf, AddToHomeScreenComponent as ɵbg, PWAModuleConfig as ɵbc, defaultPWAModuleConfig as ɵbd, AddToHomeScreenService as ɵbe, AbstractStoreItemComponent as ɵcl, ScheduleComponent as ɵcq, StoreFinderGridComponent as ɵcj, StoreFinderHeaderComponent as ɵcr, StoreFinderListItemComponent as ɵcp, StoreFinderMapComponent as ɵco, StoreFinderPaginationDetailsComponent as ɵct, StoreFinderListComponent as ɵcn, StoreFinderSearchResultComponent as ɵch, StoreFinderSearchComponent as ɵcm, StoreFinderStoreDescriptionComponent as ɵck, StoreFinderStoresCountComponent as ɵci, StoreFinderComponent as ɵcs, CardComponent as ɵh, CardModule as ɵg, GenericLinkModule as ɵl, PaginationComponent as ɵi, SortingComponent as ɵj, SpinnerModule as ɵk, OnlyNumberDirective as ɵf, HardcodedCheckoutComponent as ɵdf, CartNotEmptyGuard as ɵde, GuardsModule as ɵdd, OrderConfirmationPageModule as ɵdc, CurrentProductService as ɵbx, ForgotPasswordComponent as ɵcz, ForgotPasswordModule as ɵcy, LoginComponentService as ɵcu, RegisterComponentModule as ɵcv, ResetPasswordFormComponent as ɵcx, ResetPasswordModule as ɵcw, addToCart as ɵdh, addressBook as ɵdj, address as ɵdi, cartItems as ɵdl, cart as ɵdk, checkoutAddress as ɵdn, checkoutOrderConfirmation as ɵdo, checkoutReview as ɵdp, checkoutShipping as ɵdq, checkout as ɵdm, common as ɵdr, forgottenPassword as ɵds, login as ɵdt, orderCost as ɵdu, orderDetails as ɵdv, orderHistory as ɵdw, orderReview as ɵdx, paymentMethods as ɵdz, payment as ɵdy, productDetails as ɵea, productList as ɵeb, productReview as ɵec, pwa as ɵed, register as ɵee, storeFinder as ɵef };
 
 //# sourceMappingURL=spartacus-storefront.js.map
