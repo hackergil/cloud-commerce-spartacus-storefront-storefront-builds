@@ -1,9 +1,10 @@
-import { OnInit, EventEmitter, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CheckoutService, CardType, Address, Country, UserService, GlobalMessageService, AddressValidation } from '@spartacus/core';
+import { EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Address, AddressValidation, CardType, CheckoutService, Country, GlobalMessageService, UserService } from '@spartacus/core';
 import { Observable } from 'rxjs';
-import { Card } from '../../../../../ui/components/card/card.component';
+import { ICON_TYPE } from '../../../../../../cms-components/misc/icon/index';
+import { Card } from '../../../../../../shared/components/card/card.component';
 declare type monthType = {
     id: number;
     name: string;
@@ -18,6 +19,7 @@ export declare class PaymentFormComponent implements OnInit, OnDestroy {
     protected globalMessageService: GlobalMessageService;
     private fb;
     private modalService;
+    iconTypes: typeof ICON_TYPE;
     private checkboxSub;
     private addressVerifySub;
     suggestedAddressModalRef: NgbModalRef;
@@ -27,11 +29,12 @@ export declare class PaymentFormComponent implements OnInit, OnDestroy {
     shippingAddress$: Observable<Address>;
     countries$: Observable<Country[]>;
     sameAsShippingAddress: boolean;
-    backToPayment: EventEmitter<any>;
+    paymentMethodsCount: number;
+    goBack: EventEmitter<any>;
+    closeForm: EventEmitter<any>;
     addPaymentInfo: EventEmitter<any>;
     payment: FormGroup;
     billingAddress: FormGroup;
-    infoIconImgSrc: string;
     constructor(checkoutService: CheckoutService, userService: UserService, globalMessageService: GlobalMessageService, fb: FormBuilder, modalService: NgbModal);
     ngOnInit(): void;
     expMonthAndYear(): void;
@@ -49,6 +52,7 @@ export declare class PaymentFormComponent implements OnInit, OnDestroy {
     showSameAsShippingAddressCheckbox(): Observable<boolean>;
     getAddressCardContent(address: Address): Card;
     openSuggestedAddress(results: AddressValidation): void;
+    close(): void;
     back(): void;
     verifyAddress(): void;
     next(): void;
