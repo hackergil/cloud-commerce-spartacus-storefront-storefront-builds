@@ -1,21 +1,21 @@
 import { OnInit } from '@angular/core';
-import { CheckoutService, Address, CartService, UserService, OrderEntry, Cart, DeliveryMode, Country, PaymentDetails } from '@spartacus/core';
 import { Observable } from 'rxjs';
-import { Card } from '../../../../ui/components/card/card.component';
+import { Address, CartService, CheckoutService, DeliveryMode, PaymentDetails, Cart, OrderEntry, UserService, TranslationService } from '@spartacus/core';
+import { Card } from '../../../../../shared/components/card/card.component';
 export declare class ReviewSubmitComponent implements OnInit {
     protected checkoutService: CheckoutService;
     protected userService: UserService;
     protected cartService: CartService;
-    deliveryAddress: Address;
-    shippingMethod: string;
-    paymentDetails: PaymentDetails;
+    private translation;
     entries$: Observable<OrderEntry[]>;
     cart$: Observable<Cart>;
     deliveryMode$: Observable<DeliveryMode>;
-    countryName$: Observable<Country>;
-    constructor(checkoutService: CheckoutService, userService: UserService, cartService: CartService);
+    countryName$: Observable<string>;
+    deliveryAddress$: Observable<Address>;
+    paymentDetails$: Observable<PaymentDetails>;
+    constructor(checkoutService: CheckoutService, userService: UserService, cartService: CartService, translation: TranslationService);
     ngOnInit(): void;
-    getShippingAddressCard(countryName: string): Card;
-    getShippingMethodCard(deliveryMode: DeliveryMode): Card;
-    getPaymentMethodCard(): Card;
+    getShippingAddressCard(deliveryAddress: Address, countryName: string): Observable<Card>;
+    getDeliveryModeCard(deliveryMode: DeliveryMode): Observable<Card>;
+    getPaymentMethodCard(paymentDetails: PaymentDetails): Observable<Card>;
 }
