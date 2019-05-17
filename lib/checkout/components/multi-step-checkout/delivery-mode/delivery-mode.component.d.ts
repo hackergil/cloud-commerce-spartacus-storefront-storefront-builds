@@ -1,22 +1,19 @@
-import { EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { EventEmitter, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DeliveryMode, CheckoutService } from '@spartacus/core';
-import { Observable, Subscription } from 'rxjs';
-export declare class DeliveryModeComponent implements OnInit, OnDestroy {
+import { Observable } from 'rxjs';
+export declare class DeliveryModeComponent implements OnInit {
     private fb;
-    private checkoutService;
-    goToStep: EventEmitter<number>;
+    private service;
+    selectedShippingMethod: string;
+    selectMode: EventEmitter<any>;
+    backStep: EventEmitter<any>;
     supportedDeliveryModes$: Observable<DeliveryMode[]>;
-    selectedDeliveryMode$: Observable<DeliveryMode>;
-    currentDeliveryModeId: string;
-    changedOption: boolean;
-    deliveryModeSub: Subscription;
+    leave: boolean;
     mode: FormGroup;
-    constructor(fb: FormBuilder, checkoutService: CheckoutService);
+    constructor(fb: FormBuilder, service: CheckoutService);
     ngOnInit(): void;
-    changeMode(code: string): void;
     next(): void;
     back(): void;
     readonly deliveryModeInvalid: boolean;
-    ngOnDestroy(): void;
 }

@@ -1,36 +1,29 @@
 export declare const payment: {
-    paymentForm: {
-        payment: string;
-        choosePaymentMethod: string;
-        paymentType: string;
-        accountHolderName: {
-            label: string;
-            placeholder: string;
+    payment: {
+        label: {
+            payment: string;
+            choosePaymentMethod: string;
+            expires: string;
+            defaultPaymentMethod: string;
+            paymentType: string;
+            accountHolderName: string;
+            cardNumber: string;
+            expirationDate: string;
+            securityCode: string;
+            saveAsDefault: string;
+            billingAddress: string;
+            sameAsShippingAddress: string;
         };
-        cardNumber: string;
-        expirationDate: string;
-        securityCode: string;
-        securityCodeTitle: string;
-        saveAsDefault: string;
-        billingAddress: string;
-        sameAsShippingAddress: string;
-        selectOne: string;
-        monthMask: string;
-        yearMask: string;
-        useThisPayment: string;
-        addNewPayment: string;
-        changePayment: string;
-    };
-    paymentMethods: {
-        paymentMethods: string;
-        newPaymentMethodsAreAddedDuringCheckout: string;
-        invalidField: string;
-    };
-    paymentCard: {
-        deleteConfirmation: string;
-        setAsDefault: string;
-        expires: string;
-        defaultPaymentMethod: string;
-        selected: string;
+        placeholder: {
+            selectOne: string;
+            accountHolderName: string;
+            monthMask: string;
+            yearMask: string;
+        };
+        action: {
+            useThisPayment: string;
+            addNewPayment: string;
+            changePayment: string;
+        };
     };
 };

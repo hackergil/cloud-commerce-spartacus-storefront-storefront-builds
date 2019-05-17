@@ -1,23 +1,25 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { CmsService, ContentSlotComponentData, ContentSlotData, DynamicAttributeService } from '@spartacus/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-export declare class PageSlotComponent {
+import { Observable } from 'rxjs';
+import { CmsMappingService } from '../../../lib/cms/services/cms-mapping.service';
+export declare class PageSlotComponent implements OnInit {
     protected cmsService: CmsService;
     protected dynamicAttributeService: DynamicAttributeService;
     protected renderer: Renderer2;
     protected hostElement: ElementRef;
+    protected cmsMapping: CmsMappingService;
     position: string;
-    readonly position$: BehaviorSubject<string>;
+    constructor(cmsService: CmsService, dynamicAttributeService: DynamicAttributeService, renderer: Renderer2, hostElement: ElementRef, cmsMapping: CmsMappingService);
+    ngOnInit(): void;
     /**
-     * observable with `ContentSlotData` for the current position
+     * returns an observable with `ContentSlotData` for the current position
      */
     readonly slot$: Observable<ContentSlotData>;
     /**
-     * observable with components (`ContentSlotComponentData[]`)
+     * returns an observable with components (`ContentSlotComponentData[]`)
      * for the current slot
      */
     readonly components$: Observable<ContentSlotComponentData[]>;
-    constructor(cmsService: CmsService, dynamicAttributeService: DynamicAttributeService, renderer: Renderer2, hostElement: ElementRef);
     private addComponentClass;
     private addSmartEditSlotClass;
     private addSmartEditContract;

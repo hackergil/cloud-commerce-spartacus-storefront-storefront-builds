@@ -1,9 +1,12 @@
 export declare const pwa: {
     pwa: {
-        addToHomeScreenDescription: string;
-        noInstallationNeeded: string;
-        fastAccessToApplication: string;
-        addToHomeScreen: string;
-        addedToHomeScreen: string;
+        label: {
+            addToHomeScreenDescription: string;
+            noInstallationNeeded: string;
+            fastAccessToApplication: string;
+        };
+        action: {
+            addToHomeScreen: string;
+        };
     };
 };

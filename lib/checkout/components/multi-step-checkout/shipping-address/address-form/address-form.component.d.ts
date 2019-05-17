@@ -17,7 +17,6 @@ export declare class AddressFormComponent implements OnInit, OnDestroy {
     cancelBtnLabel: string;
     setAsDefaultField: boolean;
     showTitleCode: boolean;
-    showCancelBtn: boolean;
     submitAddress: EventEmitter<any>;
     backToAddress: EventEmitter<any>;
     addressVerifySub: Subscription;
